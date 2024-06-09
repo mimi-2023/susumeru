@@ -1,0 +1,5 @@
+.env
+.dockervenv
+.venv
+**/__pycache__/
+*.pyc

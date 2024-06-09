@@ -1,0 +1,52 @@
+services:
+  backend:
+    container_name: susumeru-backend
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
+    volumes:
+      - ./backend/.dockervenv:/backend/.venv
+      - ./backend:/backend
+    ports:
+      - 8000:8000    
+    tty: true
+    # command: >
+    #   /bin/sh -c '
+    #   cd ./django_app/ &&
+    #   poetry run python manage.py runserver 0.0.0.0:8000
+    #   '
+    depends_on:
+      - mysql
+
+  mysql:
+    container_name: susumeru-mysql
+    image: mysql:8.0.27
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      TZ: 'Asia/Tokyo'
+    volumes:
+      - susumeru-db:/var/lib/mysql
+
+  phpmyadmin:
+    container_name: susumeru-pma
+    image: phpmyadmin
+    depends_on:
+      - mysql
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOSTS=susumeru-mysql
+      - PMA_USER=root
+      - PMA_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "3001:80"
+    # 以下の設定は初回でエラーが出たので一旦コメントアウト
+    # volumes:
+    #   - ./phpmyadmin/sessions:/sessions
+
+volumes:
+  susumeru-db:
