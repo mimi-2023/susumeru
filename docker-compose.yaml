@@ -8,13 +8,14 @@ services:
       - ./backend/.dockervenv:/backend/.venv
       - ./backend:/backend
     ports:
-      - 8000:8000    
+      - 8000:8000
+    env_file:
+      - .env    
     tty: true
-    # command: >
-    #   /bin/sh -c '
-    #   cd ./django_app/ &&
-    #   poetry run python manage.py runserver 0.0.0.0:8000
-    #   '
+    command: >
+      /bin/sh -c '
+      poetry run uvicorn main:app --host 0.0.0.0 --reload
+      '
     depends_on:
       - mysql
 
@@ -22,7 +23,7 @@ services:
     container_name: susumeru-mysql
     image: mysql:8.0.27
     ports:
-      - "3306:3306"
+      - "${MYSQL_PORT}:${MYSQL_PORT}"
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}

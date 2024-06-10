@@ -24,5 +24,5 @@ RUN poetry install --no-root
 # 本番環境ではコピーして固定化する？
 # COPY . .
 
-# # uvicornのサーバーを立ち上げる（app設定は未変更！）
-# ENTRYPOINT ["poetry", "run", "uvicorn", "api.main:app", "--host", "0.0.0.0", "--reload"]
+# # uvicornのサーバーを立ち上げる
+# ENTRYPOINT ["poetry", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--reload"]
