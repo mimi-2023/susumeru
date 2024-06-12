@@ -18,12 +18,14 @@ services:
       '
     depends_on:
       - mysql
+      # mysql:
+      #   condition: service_healthy
 
   mysql:
     container_name: susumeru-mysql
     image: mysql:8.0.27
     ports:
-      - "${MYSQL_PORT}:${MYSQL_PORT}"
+      - ${MYSQL_PORT}:${MYSQL_PORT}
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -32,6 +34,12 @@ services:
       TZ: 'Asia/Tokyo'
     volumes:
       - susumeru-db:/var/lib/mysql
+    # 以下はbackendのcondition: service_healthyを使う場合に有効化（複数人での開発時？）
+    # healthcheck:
+    #   test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+    #   interval: 10s
+    #   timeout: 20s
+    #   retries: 10
 
   phpmyadmin:
     container_name: susumeru-pma
@@ -44,7 +52,7 @@ services:
       - PMA_USER=root
       - PMA_PASSWORD=${MYSQL_ROOT_PASSWORD}
     ports:
-      - "3001:80"
+      - 3001:80
     # 以下の設定は初回でエラーが出たので一旦コメントアウト
     # volumes:
     #   - ./phpmyadmin/sessions:/sessions
