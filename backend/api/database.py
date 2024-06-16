@@ -20,6 +20,3 @@ Base = declarative_base()
 async def get_db():
     async with async_session() as session:
         yield session
-
-# alembicは非同期でも大丈夫？？→非同期エンジン使用に書き換えないといけない。
-# あと、dockerではどうするのかな？

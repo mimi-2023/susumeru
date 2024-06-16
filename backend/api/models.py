@@ -1,6 +1,6 @@
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, Date, DateTime, ForeignKey, PrimaryKeyConstraint
-from database import Base
+from api.database import Base
 
 
 class User(Base):
@@ -10,6 +10,7 @@ class User(Base):
     name = Column(String(64), nullable=False)
     email = Column(String(64), nullable=False, unique=True)
     password = Column(String(225), nullable=False)
+    salt = Column(String(225), nullable=False)
     created_at = Column(DateTime, default=datetime.now())
     updated_at = Column(DateTime, default=datetime.now(), onupdate=datetime.now())
 
