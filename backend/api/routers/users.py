@@ -20,4 +20,4 @@ async def hello(db: DbDependency, user: UserDependency):
 
 @router.get("/hello2")
 async def hello2(user: UserDependency):
-    return await users_cruds.hello2(user)
+    return await users_cruds.hello2()

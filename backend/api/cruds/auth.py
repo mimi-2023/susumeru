@@ -26,7 +26,9 @@ async def create_user(db: AsyncSession, request: auth_schemas.SignupRequest):
     # 既に登録されているユーザーかを確認
     DBuser = await select_by_email(db, request.email)
     if DBuser is not None:
-        raise HTTPException(status_code=409, detail="登録済みのemailです")
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="登録済みのメールアドレスです"
+            )
     
     # ユーザーidをuuidで生成
     new_uuid = str(uuid4())
@@ -79,7 +81,7 @@ def create_access_token(user_id: int, expires_delta: timedelta):
 async def get_current_user(db: DbDependency, token: Annotated[str, Depends(oauth2_schema)]):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
+        detail="認証できません",
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
