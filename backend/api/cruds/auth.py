@@ -27,7 +27,8 @@ async def create_user(db: AsyncSession, request: auth_schemas.SignupRequest):
     DBuser = await select_by_email(db, request.email)
     if DBuser is not None:
         raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT, detail="登録済みのメールアドレスです"
+            status_code=status.HTTP_409_CONFLICT,
+            detail="登録済みのメールアドレスです"
             )
     
     # ユーザーidをuuidで生成
@@ -36,7 +37,11 @@ async def create_user(db: AsyncSession, request: auth_schemas.SignupRequest):
     salt = base64.b64encode(os.urandom(32)).decode()
     hashed_password = get_hashed_password(salt, request.password)
     new_user = User(
-        id=new_uuid, name=request.name, email=request.email, password=hashed_password, salt=salt
+        id=new_uuid,
+        name=request.name,
+        email=request.email,
+        password=hashed_password,
+        salt=salt
     )
     db.add(new_user)
     await db.commit()
@@ -78,7 +83,9 @@ def create_access_token(user_id: int, expires_delta: timedelta):
 
 
 # JWTトークンをデコードして得たIDで、DBからユーザー情報（ID,name,password）を取得する。
-async def get_current_user(db: DbDependency, token: Annotated[str, Depends(oauth2_schema)]):
+async def get_current_user(
+    db: DbDependency, token: Annotated[str, Depends(oauth2_schema)]
+    ):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="認証できません",
