@@ -1,15 +1,15 @@
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict, EmailStr
 
 
 class SignupRequest(BaseModel):
     name: str = Field(examples=["user1"])
-    email: str = Field(examples=["user1@example.com"])
+    email: EmailStr = Field(examples=["user1@example.com"])
     password: str = Field(examples=["user1"])
 
 
 class SignupResponse(BaseModel):
     name: str = Field(examples=["user1"])
-    email: str = Field(examples=["user1@example.com"])
+    email: EmailStr = Field(examples=["user1@example.com"])
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -22,6 +22,6 @@ class Token(BaseModel):
 class CurrentUser(BaseModel):
     id: str
     name: str
-    email: str
+    email: EmailStr
 
     model_config = ConfigDict(from_attributes=True)

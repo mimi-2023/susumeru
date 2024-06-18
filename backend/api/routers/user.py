@@ -1,6 +1,5 @@
 from typing import Annotated
-from fastapi import APIRouter, status, Depends, HTTPException
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi import APIRouter, status, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from api.cruds import auth as auth_cruds, user as user_cruds
 from api.schemas import auth as auth_schemas, user as user_schemas
@@ -10,7 +9,6 @@ from api.database import get_db
 router = APIRouter(prefix="/user", tags=["User"])
 
 DbDependency = Annotated[AsyncSession, Depends(get_db)]
-FormDependency = Annotated[OAuth2PasswordRequestForm, Depends()]
 UserDependency = Annotated[auth_schemas.CurrentUser, Depends(auth_cruds.get_current_user)]
 
 

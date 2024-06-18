@@ -1,3 +1,4 @@
+from fastapi import status, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from api.schemas import user as user_schemas
@@ -17,6 +18,11 @@ async def hello2():
 async def update_username(db: AsyncSession, id: str, new_name: str):
     result = await db.scalars(select(User).filter(User.id == id))
     user = result.first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, 
+            detail="認証できません"
+            )
     user.name = new_name
 
     db.add(user)
