@@ -94,7 +94,7 @@ async def get_current_user(
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id = payload.get("sub")
-        if user_id is None:
+        if not user_id:
             raise credentials_exception
         
     except JWTError:
@@ -102,7 +102,7 @@ async def get_current_user(
 
     result = await db.scalars(select(User).filter(User.id == user_id))
     user = result.first()
-    if user is None:
+    if not user:
         raise credentials_exception
     return auth_schemas.CurrentUser.model_validate(user)
 

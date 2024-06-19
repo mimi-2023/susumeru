@@ -15,8 +15,8 @@ async def hello2():
 
 
 # ユーザー名を変更
-async def update_username(db: AsyncSession, id: str, new_name: str):
-    result = await db.scalars(select(User).filter(User.id == id))
+async def update_username(db: AsyncSession, user_id: str, new_name: str):
+    result = await db.scalars(select(User).filter(User.id == user_id))
     user = result.first()
     if not user:
         raise HTTPException(

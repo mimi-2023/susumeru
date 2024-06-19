@@ -19,3 +19,12 @@ async def register(
     db: DbDependency, user: UserDependency, request: books_schemas.RegisterRequest
     ):
     return await books_cruds.creat_book(db, user.id, request)
+
+
+@router.post(
+    "/progresses/{book_id}", response_model=books_schemas.AddProgressResponse, status_code=status.HTTP_200_OK
+    )
+async def add_progress(
+    db: DbDependency, user: UserDependency, book_id: int, request: books_schemas.AddProgressRequest
+    ):
+    return await books_cruds.add_progress(db, user.id, book_id, request)

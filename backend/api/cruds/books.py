@@ -6,11 +6,12 @@ from api.schemas import books as books_schemas
 from api.models import Book, Progress, Target_setting
 
 
-async def creat_book(db: AsyncSession, id: str, request: books_schemas.RegisterRequest):
+# 本を登録する
+async def creat_book(db: AsyncSession, user_id: str, request: books_schemas.RegisterRequest):
         try:
             # Bookテーブルにデータを挿入
             new_book = Book(
-                user_id = id,
+                user_id = user_id,
                 title = request.title,
                 first_page = request.first_page,
                 last_page = request.last_page
@@ -38,3 +39,85 @@ async def creat_book(db: AsyncSession, id: str, request: books_schemas.RegisterR
                 ) 
         
         return books_schemas.RegisterResponse.model_validate(new_book)
+
+
+# progressを追加する
+async def add_progress(
+        db: AsyncSession, user_id: str, book_id: int, request: books_schemas.AddProgressRequest
+        ):
+    # 該当するbookレコードを取得
+    result = await db.scalars(select(Book).filter(Book.id == book_id))
+    book = result.first()
+    if not book:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, 
+            detail="認証できません"
+            )
+    # ユーザーが本の所有者と一致していることを確認
+    if book.user_id != user_id:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="認証できません"
+            )
+    
+    # 本の最新のprogressレコードを取得
+    result = await db.scalars(
+        select(Progress).filter(Progress.book_id == book_id).order_by(Progress.date.desc())
+        )
+    latest_progress = result.first()
+    # progressレコードがない場合は、最新のtarget_settingを取得して仮のlatest_progressとする
+    if not latest_progress:
+        result = await db.scalars(
+            select(Target_setting)
+            .filter(Target_setting.book_id == book_id)
+            .order_by(Target_setting.start_date.desc())
+            )
+        target_setting = result.first()
+        latest_progress = Progress(
+            book_id = book_id,
+            date = target_setting.start_date,
+            current_page = target_setting.start_page,
+            progressed_pages = 0
+        )
+
+    # 日付が、latest_progress<=request<=今日であることを確認
+    if not (latest_progress.date <= request.day <= date.today()):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="日付が不正です"
+            )
+    # current_pageが、latest_progress<request<=最終ページであることを確認
+    if not (latest_progress.current_page < request.current_page <= book.last_page):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="ページ位置が不正です"
+            )
+    
+    # requestとlatest_progressの日付が同じ場合、progressed_pagesを加算してlatest_progressを上書きする
+    if request.day == latest_progress.date:
+        latest_progress.progressed_pages += request.current_page - latest_progress.current_page
+        latest_progress.current_page = request.current_page
+        db.add(latest_progress)
+        await db.commit()
+        await db.refresh(latest_progress)
+
+        return books_schemas.AddProgressResponse(
+            day = latest_progress.date, current_page = latest_progress.current_page
+        )
+    # requestとlatest_progressの日付が異なる場合、新しいprogressを追加する
+    else:
+        new_progress = Progress(
+            book_id = book_id,
+            date = request.day,
+            current_page = request.current_page,
+            progressed_pages = request.current_page - latest_progress.current_page
+        )
+        db.add(new_progress)
+        await db.commit()
+        await db.refresh(new_progress)
+
+        return books_schemas.AddProgressResponse(
+            day = new_progress.date, current_page = new_progress.current_page
+            )
+
+
