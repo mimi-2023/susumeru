@@ -8,7 +8,7 @@ class RegisterRequest(BaseModel):
     last_page: int = Field(gt=0, examples=[150])
     target_pages: int = Field(gt=0, examples=[10])
 
-    # 開始ページと最終ページの差が、目標ページ数よりも大きいことを確認
+    # 開始ページと最終ページの差が、目標ページ数以上であることを確認
     @model_validator(mode="after")
     def validate_pages(self):
         if self.last_page - self.first_page < self.target_pages:
@@ -36,3 +36,17 @@ class AddProgressResponse(BaseModel):
     progressed_pages: int = Field(gt=0, examples=[10])
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class UpdateTargetRequest(BaseModel):
+    target_pages: int = Field(gt=0, examples=[20])
+
+
+class UpdateTargetResponse(BaseModel):
+    book_id: int = Field(examples=[1])
+    start_date: date = Field(examples=["2024-06-12"])
+    target_pages: int = Field(gt=0, examples=[20])
+    start_page: int = Field(gt=0, examples=[30])
+
+    model_config = ConfigDict(from_attributes=True)
+

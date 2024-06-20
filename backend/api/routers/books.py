@@ -4,7 +4,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from api.cruds import books as books_cruds 
 from api.cruds.auth import get_current_user
 from api.schemas.auth import CurrentUser
-from api.schemas.books import RegisterRequest, RegisterResponse, AddProgressRequest, AddProgressResponse
+from api.schemas.books import (
+    RegisterRequest, RegisterResponse, 
+    AddProgressRequest, AddProgressResponse, 
+    UpdateTargetRequest, UpdateTargetResponse)
 from api.database import get_db
 
 
@@ -30,3 +33,12 @@ async def add_progress(
     db: DbDependency, user: UserDependency, book_id: int, request: AddProgressRequest
     ):
     return await books_cruds.add_progress(db, user.id, book_id, request)
+
+
+@router.put(
+    "/target_settings/{book_id}", response_model=UpdateTargetResponse, status_code=status.HTTP_200_OK
+    )
+async def update_target(
+    db: DbDependency, user: UserDependency, book_id: int, request: UpdateTargetRequest
+    ):
+    return await books_cruds.update_target_setting(db, user.id, book_id, request)
