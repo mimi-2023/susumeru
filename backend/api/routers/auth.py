@@ -5,7 +5,7 @@ from fastapi import APIRouter, status, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 from api.cruds import auth as auth_cruds
-from api.schemas import auth as auth_schemas
+from api.schemas.auth import SignupRequest, SignupResponse, Token
 from api.database import get_db
 
 ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")
@@ -17,14 +17,14 @@ FormDependency = Annotated[OAuth2PasswordRequestForm, Depends()]
 
 
 @router.post(
-    "/signup", response_model=auth_schemas.SignupResponse, status_code=status.HTTP_201_CREATED
+    "/signup", response_model=SignupResponse, status_code=status.HTTP_201_CREATED
     )
-async def signup(db: DbDependency, request: auth_schemas.SignupRequest):
+async def signup(db: DbDependency, request: SignupRequest):
     return await auth_cruds.create_user(db, request)
 
 
 @router.post(
-    "/signin", response_model=auth_schemas.Token, status_code=status.HTTP_200_OK
+    "/signin", response_model=Token, status_code=status.HTTP_200_OK
     )
 async def signin(db: DbDependency, form_data: FormDependency):
     # authenticate_userはemailとpasswordで認証する関数だが、OAuth2PasswordRequestFormはemail属性がない
@@ -40,4 +40,4 @@ async def signin(db: DbDependency, form_data: FormDependency):
         user.id, timedelta(minutes=int(ACCESS_TOKEN_EXPIRE_MINUTES))
         )
 
-    return auth_schemas.Token(access_token=token, token_type="bearer")
+    return Token(access_token=token, token_type="bearer")

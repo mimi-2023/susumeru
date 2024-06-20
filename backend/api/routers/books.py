@@ -1,30 +1,32 @@
 from typing import Annotated
 from fastapi import APIRouter, status, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from api.cruds import auth as auth_cruds, books as books_cruds
-from api.schemas import auth as auth_schemas, books as books_schemas
+from api.cruds import books as books_cruds 
+from api.cruds.auth import get_current_user
+from api.schemas.auth import CurrentUser
+from api.schemas.books import RegisterRequest, RegisterResponse, AddProgressRequest, AddProgressResponse
 from api.database import get_db
 
 
 router = APIRouter(prefix="/books", tags=["Books"])
 
 DbDependency = Annotated[AsyncSession, Depends(get_db)]
-UserDependency = Annotated[auth_schemas.CurrentUser, Depends(auth_cruds.get_current_user)]
+UserDependency = Annotated[CurrentUser, Depends(get_current_user)]
 
 
 @router.post(
-    "/register", response_model=books_schemas.RegisterResponse, status_code=status.HTTP_201_CREATED
+    "/register", response_model=RegisterResponse, status_code=status.HTTP_201_CREATED
     )
 async def register(
-    db: DbDependency, user: UserDependency, request: books_schemas.RegisterRequest
+    db: DbDependency, user: UserDependency, request: RegisterRequest
     ):
     return await books_cruds.creat_book(db, user.id, request)
 
 
 @router.post(
-    "/progresses/{book_id}", response_model=books_schemas.AddProgressResponse, status_code=status.HTTP_200_OK
+    "/progresses/{book_id}", response_model=AddProgressResponse, status_code=status.HTTP_200_OK
     )
 async def add_progress(
-    db: DbDependency, user: UserDependency, book_id: int, request: books_schemas.AddProgressRequest
+    db: DbDependency, user: UserDependency, book_id: int, request: AddProgressRequest
     ):
     return await books_cruds.add_progress(db, user.id, book_id, request)

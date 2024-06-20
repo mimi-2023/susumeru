@@ -10,7 +10,7 @@ from jose import jwt, JWTError
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from api.database import get_db
-from api.schemas import auth as auth_schemas
+from api.schemas.auth import SignupRequest, SignupResponse, CurrentUser
 from api.models import User
 
 ALGORITHM = os.getenv("ALGORITHM")
@@ -22,7 +22,7 @@ DbDependency = Annotated[AsyncSession, Depends(get_db)]
 
 
 # ユーザー登録
-async def create_user(db: AsyncSession, request: auth_schemas.SignupRequest):
+async def create_user(db: AsyncSession, request: SignupRequest):
     # 既に登録されているユーザーかを確認
     DBuser = await select_by_email(db, request.email)
     if DBuser is not None:
@@ -47,7 +47,7 @@ async def create_user(db: AsyncSession, request: auth_schemas.SignupRequest):
     await db.commit()
     await db.refresh(new_user)
 
-    return auth_schemas.SignupResponse.model_validate(new_user)
+    return SignupResponse.model_validate(new_user)
 
 
 # emailとpasswordでのユーザー認証
@@ -104,6 +104,6 @@ async def get_current_user(
     user = result.first()
     if not user:
         raise credentials_exception
-    return auth_schemas.CurrentUser.model_validate(user)
+    return CurrentUser.model_validate(user)
 
     

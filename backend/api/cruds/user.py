@@ -1,7 +1,7 @@
 from fastapi import status, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from api.schemas import user as user_schemas
+from api.schemas.user import UserResponse
 from api.models import User
 
 
@@ -29,4 +29,4 @@ async def update_username(db: AsyncSession, user_id: str, new_name: str):
     await db.commit()
     await db.refresh(user)
 
-    return user_schemas.UserResponse.model_validate(user)
+    return UserResponse.model_validate(user)
