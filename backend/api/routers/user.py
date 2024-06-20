@@ -14,15 +14,6 @@ DbDependency = Annotated[AsyncSession, Depends(get_db)]
 UserDependency = Annotated[CurrentUser, Depends(get_current_user)]
 
 
-@router.get("/hello")
-async def hello(db: DbDependency, user: UserDependency):
-    return await user_cruds.hello(db, user.id)
-
-@router.get("/hello2")
-async def hello2(user: UserDependency):
-    return await user_cruds.hello2()
-
-
 @router.get(
     "", response_model=UserResponse, status_code=status.HTTP_200_OK
     )

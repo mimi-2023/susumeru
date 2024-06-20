@@ -1,4 +1,3 @@
-from datetime import date
 from pydantic import BaseModel, Field, ConfigDict, model_validator
 
 
@@ -20,33 +19,6 @@ class RegisterResponse(BaseModel):
     title: str = Field(examples=["book1"])
     first_page: int = Field(gt=0, examples=[20])
     last_page: int = Field(gt=0, examples=[150])
-
-    model_config = ConfigDict(from_attributes=True)
-
-
-class AddProgressRequest(BaseModel):
-    record_date: date = Field(examples=["2024-06-10"])
-    current_page: int = Field(gt=0, examples=[30])
-
-
-class AddProgressResponse(BaseModel):
-    book_id: int = Field(examples=[1])
-    record_date: date = Field(examples=["2024-06-10"])
-    current_page: int = Field(gt=0, examples=[30])
-    progressed_pages: int = Field(gt=0, examples=[10])
-
-    model_config = ConfigDict(from_attributes=True)
-
-
-class UpdateTargetRequest(BaseModel):
-    target_pages: int = Field(gt=0, examples=[20])
-
-
-class UpdateTargetResponse(BaseModel):
-    book_id: int = Field(examples=[1])
-    start_date: date = Field(examples=["2024-06-12"])
-    target_pages: int = Field(gt=0, examples=[20])
-    start_page: int = Field(gt=0, examples=[30])
 
     model_config = ConfigDict(from_attributes=True)
 

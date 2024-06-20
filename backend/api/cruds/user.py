@@ -5,15 +5,6 @@ from api.schemas.user import UserResponse
 from api.models import User
 
 
-async def hello(db: AsyncSession, id):
-    result = await db.scalars(select(User).filter(User.id == id))
-    user = result.first()
-    return f"Hello, {user.name}! You are wellcome!"
-
-async def hello2():
-    return f"Hello! You are verry wellcome!"
-
-
 # ユーザー名を変更
 async def update_username(db: AsyncSession, user_id: str, new_name: str):
     result = await db.scalars(select(User).filter(User.id == user_id))
