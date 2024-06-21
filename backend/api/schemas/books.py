@@ -1,6 +1,17 @@
 from pydantic import BaseModel, Field, ConfigDict, model_validator
 
 
+class GetBookResponse(BaseModel):
+    book_id: int = Field(gt=0, examples=[1])
+    title: str = Field(examples=["book1"])
+    first_page: int = Field(gt=0, examples=[20])
+    last_page: int = Field(gt=0, examples=[150])
+    target_pages: int = Field(gt=0, examples=[10])
+    total_progressed_pages: int = Field(ge=0, examples=[10])
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 class RegisterRequest(BaseModel):
     title: str = Field(examples=["book1"])
     first_page: int = Field(gt=0, examples=[20])

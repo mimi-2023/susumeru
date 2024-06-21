@@ -22,6 +22,14 @@ async def update_target_setting(
             detail="認証できません"
             )
     
+    # 最新のtarget_settingを取得
+    result = await db.scalars(
+        select(Target_setting)
+        .filter(Target_setting.book_id == book_id)
+        .order_by(Target_setting.start_date.desc())
+        )
+    latest_target = result.first()
+
     # 昨日以前のprogressesの中から、最新のcurrent_pageを取得
     yesterday_date = date.today() - timedelta(days=1)
     result = await db.scalars(
@@ -30,14 +38,6 @@ async def update_target_setting(
         .order_by(Progress.record_date.desc())
         )
     current_page = result.first()
-
-    # 最新のtarget_settingを取得
-    result = await db.scalars(
-        select(Target_setting)
-        .filter(Target_setting.book_id == book_id)
-        .order_by(Target_setting.start_date.desc())
-        )
-    latest_target = result.first()
 
     # 昨日以前のprogressesがない場合→最新のtarget_settingのstart_pageをcurrent_pageとする
     if not current_page:
