@@ -2,13 +2,13 @@ from datetime import date
 from fastapi import status, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from api.schemas.progresses import AddProgressRequest, AddProgressResponse   
+from api.schemas.progresses import AddProgressResponse   
 from api.models import Book, Progress, Target_setting
 
 
 # progressを追加する
 async def add_progress(
-        db: AsyncSession, user_id: str, book_id: int, request: AddProgressRequest
+        db: AsyncSession, user_id: str, book_id: int, record_date: date, current_page: int
         ):
     # 該当のbook_id, user_idを持つbookレコードを取得
     result = await db.scalars(
@@ -44,23 +44,23 @@ async def add_progress(
             progressed_pages = 0
         )
 
-    # 日付が、latest_progress<=request<=今日であることを確認
-    if not (latest_progress.record_date <= request.record_date <= date.today()):
+    # 日付が、latest_progress<=record_date<=今日であることを確認
+    if not (latest_progress.record_date <= record_date <= date.today()):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="日付が不正です"
             )
     # current_pageが、latest_progress<request<=最終ページであることを確認
-    if not (latest_progress.current_page < request.current_page <= book.last_page):
+    if not (latest_progress.current_page < current_page <= book.last_page):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="ページ位置が不正です"
             )
     
     # requestとlatest_progressの日付が同じ場合、progressed_pagesを加算してlatest_progressを上書きする
-    if request.record_date == latest_progress.record_date:
-        latest_progress.progressed_pages += request.current_page - latest_progress.current_page
-        latest_progress.current_page = request.current_page
+    if record_date == latest_progress.record_date:
+        latest_progress.progressed_pages += current_page - latest_progress.current_page
+        latest_progress.current_page = current_page
         db.add(latest_progress)
         await db.commit()
         await db.refresh(latest_progress)
@@ -71,9 +71,9 @@ async def add_progress(
     else:
         new_progress = Progress(
             book_id = book_id,
-            record_date = request.record_date,
-            current_page = request.current_page,
-            progressed_pages = request.current_page - latest_progress.current_page
+            record_date = record_date,
+            current_page = current_page,
+            progressed_pages = current_page - latest_progress.current_page
         )
         db.add(new_progress)
         await db.commit()
