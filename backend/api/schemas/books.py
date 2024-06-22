@@ -1,3 +1,5 @@
+from datetime import date
+from typing import List
 from pydantic import BaseModel, Field, ConfigDict, model_validator
 
 
@@ -6,9 +8,25 @@ class GetBookResponse(BaseModel):
     title: str = Field(examples=["book1"])
     first_page: int = Field(gt=0, examples=[20])
     last_page: int = Field(gt=0, examples=[150])
-    target_pages: int = Field(gt=0, examples=[10])
-    total_progressed_pages: int = Field(ge=0, examples=[10])
+    latest_target: int = Field(gt=0, examples=[10]) 
+    latest_target_startdate: date = Field(examples=["2024-06-10"])
+    latest_target_startpage: int = Field(gt=0, examples=[20]) 
+    latest_current_page: int = Field(gt=0, examples=[10])
 
+    model_config = ConfigDict(from_attributes=True)
+
+
+# Progressがない日でも、progressed_pages=0にしてデータを作成する
+class ProgressData(BaseModel):
+    record_date: date = Field(examples=["2024-06-10"])
+    progressed_pages: int = Field(ge=0, examples=[10])
+    target_pages: int = Field(gt=0, examples=[10])
+
+
+class GetProgressResponse(BaseModel):
+    book_id: int = Field(gt=0, examples=[1])
+    week_progresses: list[ProgressData] = Field()
+    
     model_config = ConfigDict(from_attributes=True)
 
 

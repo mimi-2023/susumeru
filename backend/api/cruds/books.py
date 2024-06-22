@@ -7,8 +7,8 @@ from api.schemas.books import GetBookResponse, RegisterRequest, RegisterResponse
 from api.models import Book, Progress, Target_setting
 
 
-# 本の一覧を取得
-async def get_books(db: AsyncSession, user_id: str):
+# 本の情報リストを取得
+async def get_books_list(db: AsyncSession, user_id: str):
     # 同じtarget_settingsテーブル同士でjoinするためにaliasを作成
     TS1 = aliased(Target_setting)
     TS2 = aliased(Target_setting)
@@ -21,9 +21,9 @@ async def get_books(db: AsyncSession, user_id: str):
     )
 
     # target_settingsにTS_subqueryをjoin
-    # book_idとbook_id毎の最新target_pagesをselectするサブクエリlatest_targetを作成
+    # book_id毎の最新targetレコードをselectするサブクエリlatest_targetを作成
     latest_target = (
-        select(TS2.book_id, TS2.target_pages)
+        select(TS2)
         .join(TS_subquery, 
               (TS2.book_id == TS_subquery.c.book_id) & 
               (TS2.start_date == TS_subquery.c.latest_start_date))
@@ -52,9 +52,12 @@ async def get_books(db: AsyncSession, user_id: str):
     )
 
     # booksテーブルに、latest_target、latest_progressの2つのサブクエリをouterjoin
-    # use_idが一致するbookレコードとtarget_pages,current_pageを、record_dateの降順に並び替えて取得
+    # use_idが一致するbookレコードとtarget情報,current_pageを、record_dateの降順に並び替えて取得
     result = await db.execute(
-        select(Book, latest_target.c.target_pages, latest_progress.c.current_page)
+        select(Book, 
+               latest_target.c.start_date, latest_target.c.target_pages, latest_target.c.start_page, 
+               latest_progress.c.current_page
+               )
         .outerjoin(latest_target, Book.id == latest_target.c.book_id)
         .outerjoin(latest_progress, Book.id == latest_progress.c.book_id)
         .filter(Book.user_id == user_id)
@@ -64,7 +67,7 @@ async def get_books(db: AsyncSession, user_id: str):
     
     # GetBookResponseを作成し、response_listに追加してreturn
     response_list = []
-    for book, target_pages, current_page in books:
+    for book, target_startdate, target_pages, target_startpage, current_page in books:
         # progressがなくcurrent_pageがNoneの場合は、first_pageをcurrent_pageとする
         if not current_page:
             current_page = book.first_page
@@ -73,12 +76,72 @@ async def get_books(db: AsyncSession, user_id: str):
             title = book.title,
             first_page = book.first_page,
             last_page = book.last_page,
-            target_pages = target_pages,
-            total_progressed_pages = current_page - book.first_page
+            latest_target = target_pages,
+            latest_target_startdate = target_startdate,
+            latest_target_startpage = target_startpage,
+            latest_current_page = current_page,        
         )
         response_list.append(data)
     
     return response_list
+
+
+# 本の情報を単独で取得
+async def get_book(db: AsyncSession, user_id: str, book_id: int):
+    # 指定されたbook_idの最新targetレコードをselectするサブクエリlatest_targetを作成
+    latest_target = (
+        select(Target_setting)
+        .filter(Target_setting.book_id == book_id)
+        .order_by(Target_setting.start_date.desc())
+        .limit(1)
+        .subquery()
+    )
+    # 指定されたbook_idとその最新record_date,current_pageをselectするサブクエリlatest_progressを作成
+    latest_progress = (
+        select(Progress)
+        .filter(Progress.book_id == book_id)
+        .order_by(Progress.record_date.desc())
+        .limit(1)
+        .subquery()
+    )
+
+    # booksテーブルに、latest_target、latest_progressの2つのサブクエリをouterjoin
+    # 指定されたbook_idとuser_idが一致するbookレコードとその最新target情報,current_pageを取得
+    result = await db.execute(
+        select(Book, 
+               latest_target.c.start_date, latest_target.c.target_pages, latest_target.c.start_page, 
+               latest_progress.c.current_page
+               )
+        .outerjoin(latest_target, Book.id == latest_target.c.book_id)
+        .outerjoin(latest_progress, Book.id == latest_progress.c.book_id)
+        .filter(Book.id == book_id, Book.user_id == user_id)
+        )
+    book_data = result.first()
+
+    if not book_data:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, 
+            detail="認証できません"
+            )
+    
+    # 取得したbook_dataをunpack
+    book, target_startdate, target_pages, target_startpage, current_page = book_data
+
+    # progressがなくcurrent_pageがNoneの場合は、first_pageをcurrent_pageとする
+    if not current_page:
+        current_page = book.first_page
+
+    # GetBookResponseを作成してreturn
+    return GetBookResponse(
+        book_id = book.id,
+        title = book.title,
+        first_page = book.first_page,
+        last_page = book.last_page,
+        latest_target = target_pages,
+        latest_target_startdate = target_startdate,
+        latest_target_startpage = target_startpage,
+        latest_current_page = current_page,        
+    )
 
 
 # 本を登録する
