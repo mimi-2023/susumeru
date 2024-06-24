@@ -46,11 +46,11 @@ class Progress(Base):
     __tablename__ = "progresses"
 
     book_id = Column(Integer, ForeignKey("books.id", ondelete="CASCADE"))
-    date = Column(Date)
+    record_date = Column(Date)
     current_page = Column(Integer, nullable=False)
     progressed_pages = Column(Integer, nullable=False)
 
     __table_args__ = (
-        PrimaryKeyConstraint('book_id', 'date'),
+        PrimaryKeyConstraint('book_id', 'record_date'),
     )
 
