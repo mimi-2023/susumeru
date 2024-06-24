@@ -10,7 +10,7 @@ from api.models import Book, Progress, Target_setting
 async def update_target_setting(
         db: AsyncSession, user_id: str, book_id: int, request: UpdateTargetRequest
         ):
-    # 該当のbook_id, user_idを持つbookレコードのuser_idを取得
+    # 該当のbook_id, user_idを持つbookレコードのuser_idを取得し、存在しなければ認証エラーを返す
     result = await db.scalars(
         select(Book.user_id)
         .filter(Book.id == book_id, Book.user_id == user_id)
