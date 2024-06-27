@@ -24,7 +24,7 @@ async def get_week_progresses(
     return await progresses_cruds.get_week_progresses(db, user.id, book_id, record_date)
 
 
-@router.post(
+@router.put(
     "/{book_id}/{record_date}", response_model=AddProgressResponse, status_code=status.HTTP_200_OK
     )
 async def add_progress(

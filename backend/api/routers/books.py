@@ -14,6 +14,15 @@ DbDependency = Annotated[AsyncSession, Depends(get_db)]
 UserDependency = Annotated[CurrentUser, Depends(get_current_user)]
 
 
+@router.post(
+    "", response_model=RegisterResponse, status_code=status.HTTP_201_CREATED
+    )
+async def creat_book(
+    db: DbDependency, user: UserDependency, request: RegisterRequest
+    ):
+    return await books_cruds.creat_book(db, user.id, request)
+
+
 @router.get(
     "", response_model=list[GetBookResponse], status_code=status.HTTP_200_OK
     )
@@ -31,11 +40,3 @@ async def get_book(
     ):
     return await books_cruds.get_book(db, user.id, book_id)
 
-
-@router.post(
-    "/register", response_model=RegisterResponse, status_code=status.HTTP_201_CREATED
-    )
-async def register(
-    db: DbDependency, user: UserDependency, request: RegisterRequest
-    ):
-    return await books_cruds.creat_book(db, user.id, request)
