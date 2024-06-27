@@ -56,6 +56,6 @@ services:
     # 以下の設定は初回でエラーが出たので一旦コメントアウト
     # volumes:
     #   - ./phpmyadmin/sessions:/sessions
-
+   
 volumes:
   susumeru-db:
