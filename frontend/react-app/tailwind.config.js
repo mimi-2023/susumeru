@@ -19,7 +19,8 @@ export default {
       myPaleGray: "#D9D9D9",
       textBlack: "#404040",
       textGray: "#5C5C5C",
-      hoverOrange: "#EEAB00"
+      hoverOrange: "#EEAB00",
+      hoverBlue: "#318EC1"
 
       },
     },
