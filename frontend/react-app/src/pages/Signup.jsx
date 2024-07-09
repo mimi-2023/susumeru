@@ -1,7 +1,41 @@
 import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from '@hookform/resolvers/zod';
 import susumeruLogo from "../assets/susumeru_logo.svg";
 
 const Signup = () => {
+  // 入力フォームのバリデーション
+  const signupSchema = z
+    .object({
+      name: z
+        .string()
+        .nonempty("ユーザー名は必須です")
+        .max(64, "64文字以下で入力して下さい"),
+      email: z
+        .string()
+        .nonempty("メールアドレスは必須です")
+        .email("メールドレスの形式が正しくありません")
+        .max(64, "64文字以下で入力して下さい"),
+      password: z
+        .string()
+        .nonempty("パスワードは必須です")
+        .min(8, "8文字以上で入力して下さい")
+        .max(128, "128文字以下で入力して下さい"),
+      password2: z
+        .string(),
+    })
+    .refine((data) => data.password === data.password2, {
+      message: "パスワードが一致しません",
+      path: ["password2"],
+    });
+
+  const { 
+    register, handleSubmit, formState: { errors } 
+  } = useForm({ mode: "onChange", resolver: zodResolver(signupSchema), });
+
+  const onSubmit = (data) => console.log(data);
+
   return (
     <div className="bg-myPaleBlue text-textBlack font-roundedMplus font-medium min-h-screen">
       <div className="mx-auto pt-5 w-5/6 max-w-xs">
@@ -9,30 +43,58 @@ const Signup = () => {
         <h1 className="mb-10 text-xl text-center">
           新規登録
         </h1>
-        <form action="" className="space-y-5">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <div className="flex flex-col gap-2">
             <label htmlFor="name">
               ユーザー名
             </label>
-            <input id="name" type="text" placeholder="  Name" className="rounded-lg shadow-lg text-lg focus:outline-none"/>
+            <input 
+              {...register("name")}
+              id="name" 
+              type="text" 
+              placeholder="Name" 
+              className="px-3 py-0.5 rounded-lg shadow-lg text-lg focus:outline-none"
+              />
+            <p className="text-myRed text-sm">{errors.name?.message}</p>
           </div>
           <div className="flex flex-col gap-2">
             <label htmlFor="email">
               メールアドレス
             </label>
-            <input id="email" type="text" placeholder="  Email" className="rounded-lg shadow-lg text-lg focus:outline-none"/>
+            <input 
+              {...register("email")}
+              id="email" 
+              type="email" 
+              placeholder="Email" 
+              className="px-3 py-0.5 rounded-lg shadow-lg text-lg focus:outline-none"
+              />
+            <p className="text-myRed text-sm">{errors.email?.message}</p>
           </div>
           <div className="flex flex-col gap-2">
             <label htmlFor="password1">
               パスワード
             </label>
-            <input id="password1" type="password" placeholder="  Password" className="rounded-lg shadow-lg text-lg focus:outline-none"/>
+            <input 
+              {...register("password")}
+              id="password1" 
+              type="password" 
+              placeholder="Password" 
+              className="px-3 py-0.5 rounded-lg shadow-lg text-lg focus:outline-none"
+              />
+            <p className="text-myRed text-sm">{errors.password?.message}</p>
           </div>
           <div className="flex flex-col gap-2">
             <label htmlFor="password2">
               パスワード（確認用）
             </label>
-            <input id="password2" type="password" placeholder="  Password(confirm)" className="rounded-lg shadow-lg text-lg focus:outline-none"/>
+            <input 
+              {...register("password2")}
+              id="password2" 
+              type="password" 
+              placeholder="Password(confirm)" 
+              className="px-3 py-0.5 rounded-lg shadow-lg text-lg focus:outline-none"
+              />
+            <p className="text-myRed text-sm">{errors.password2?.message}</p>
           </div>
           <div className="flex justify-center">
             <button 
@@ -51,6 +113,6 @@ const Signup = () => {
       </div>
     </div>
   )
-}
+};
 
 export default Signup;

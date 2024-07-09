@@ -23,32 +23,32 @@ const Header = () => {
         {/* 背景をグレーアウトするか検討中。しないなら、以下のdivは消す */}
         <div className="">
         <nav className={openMenu 
-          ? "bg-myPaleBlue p-8 absolute z-10 top-20 left-0 shadow-lg md:shadow-none" 
-          : "hidden bg-myPaleBlue p-8 absolute z-10 top-20 left-0 md:block"}
-          >
-          <h2 className="mb-8 text-myMediumBlue text-3xl font-extrabold">
+          ? "bg-myPaleBlue p-8 absolute z-10 top-20 left-0 space-y-8 shadow-lg md:shadow-none" 
+          : "hidden bg-myPaleBlue p-8 absolute z-10 top-20 left-0 space-y-8 md:block"
+        }>
+          <h2 className="text-myMediumBlue text-3xl font-extrabold">
             MENU
           </h2>
-          <ul className="">
-            <li className="mb-6">
-              <Link to="" className="flex items-center gap-5 transition hover:opacity-40">
+          <ul className="space-y-6">
+            <li>
+              <Link to="/books/list" className="flex items-center gap-5 transition hover:opacity-40">
                 <img src={bookIcon} alt="本の一覧を表示" />
                 <p>本の一覧を表示</p>
               </Link>
             </li>
-            <li className="mb-6">
+            <li>
               <Link to="" className="flex items-center gap-5 transition hover:opacity-40">
                 <img src={plusIcon} alt="本を登録する" />
                 <p>本を登録する</p>
               </Link>
             </li>
-            <li className="mb-6">
-              <Link to="" className="flex items-center gap-5 transition hover:opacity-40">
+            <li>
+              <Link to="/user" className="flex items-center gap-5 transition hover:opacity-40">
                 <img src={userIcon} alt="ユーザー情報" />
                 <p>ユーザー情報</p>
               </Link>
             </li>
-            <li className="mb-6">
+            <li>
               <Link to="" className="flex items-center gap-5 transition hover:opacity-40">
                 <img src={logoutIcon} alt="ログアウト" />
                 <p>ログアウト</p>
@@ -62,6 +62,6 @@ const Header = () => {
       <img src={susumeruLogo} alt="logo" className="absolute top-0 right-0"/> 
     </header>
   )
-}
+};
 
 export default Header;
