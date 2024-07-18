@@ -1,8 +1,8 @@
 {
     "name": "susumeru-frontend",
     // susumeruディレクトリのdocker-compose.yamlから使用する場合は以下へ変更
-    // "dockerComposeFile": "../../docker-compose.yaml",
-    "dockerComposeFile": "../../frontend/docker-compose.yaml",
+    "dockerComposeFile": "../../docker-compose.yaml",
+    // "dockerComposeFile": "../../frontend/docker-compose.yaml",
     "service": "frontend",
     "workspaceFolder": "/frontend",
     "shutdownAction": "none",

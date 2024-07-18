@@ -56,6 +56,25 @@ services:
     # 以下の設定は初回でエラーが出たので一旦コメントアウト
     # volumes:
     #   - ./phpmyadmin/sessions:/sessions
+
+  frontend:
+      container_name: susumeru-frontend
+      build:
+        context: .
+        dockerfile: ./frontend/Dockerfile
+      volumes:
+        - ./frontend:/frontend
+        - susumeru-node_modules:/frontend/react-app/node_modules
+      ports:
+        - 5173:5173
+      # env_file:
+      #   - .env    
+      # tty: true
+      command: >
+        /bin/sh -c '
+        npm run dev
+        '
    
 volumes:
   susumeru-db:
+  susumeru-node_modules:
