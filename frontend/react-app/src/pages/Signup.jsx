@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from '@hookform/resolvers/zod';
 import susumeruLogo from "../assets/susumeru_logo.svg";
+import { signupRequest } from "../repositories/Requests";
 
 const Signup = () => {
   // 入力フォームのバリデーション
@@ -30,11 +32,28 @@ const Signup = () => {
       path: ["password2"],
     });
 
+  const [requestError, setRequestError] = useState("");
   const { 
     register, handleSubmit, formState: { errors } 
   } = useForm({ mode: "onChange", resolver: zodResolver(signupSchema), });
 
-  const onSubmit = (data) => console.log(data);
+  // サインアップ処理
+  const handleSignup = async(data) => {
+    setRequestError("");
+    try {
+      const response = await signupRequest(data.name, data.email, data.password);
+      console.log(response.data);
+      
+    } catch (error) {
+      if (error.response) {
+        // 2xx以外のHTTPステータスがレスポンスで返ってきた場合
+        setRequestError("登録に失敗しました");      
+      } else {
+        // レスポンスがない場合
+        setRequestError("通信エラーです");
+      }
+    }  
+  };
 
   return (
     <div className="bg-myPaleBlue text-textBlack font-roundedMplus font-medium min-h-screen">
@@ -43,7 +62,7 @@ const Signup = () => {
         <h1 className="mb-10 text-xl text-center">
           新規登録
         </h1>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+        <form onSubmit={handleSubmit(handleSignup)} className="space-y-5">
           <div className="flex flex-col gap-2">
             <label htmlFor="name">
               ユーザー名
@@ -95,6 +114,7 @@ const Signup = () => {
               className="px-3 py-0.5 rounded-lg shadow-lg text-lg focus:outline-none"
               />
             <p className="text-myRed text-sm">{errors.password2?.message}</p>
+            {requestError && (<p className="text-myRed text-center">{requestError}</p>)}  
           </div>
           <div className="flex justify-center">
             <button 
