@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -33,6 +33,7 @@ const Signup = () => {
     });
 
   const [requestError, setRequestError] = useState("");
+  const navigate = useNavigate();
   const { 
     register, handleSubmit, formState: { errors } 
   } = useForm({ mode: "onChange", resolver: zodResolver(signupSchema), });
@@ -42,8 +43,7 @@ const Signup = () => {
     setRequestError("");
     try {
       const response = await signupRequest(data.name, data.email, data.password);
-      console.log(response.data);
-      
+      navigate("/signin");
     } catch (error) {
       if (error.response) {
         // 2xx以外のHTTPステータスがレスポンスで返ってきた場合

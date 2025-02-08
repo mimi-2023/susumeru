@@ -12,17 +12,21 @@ const apiPathUrl = {
 };
 
 // APIリクエストのベース
-const apiRequest = async({ method, apiEndpoint, data={}, token }) => {
+const apiRequest = async({ method, apiEndpoint, data={}, token, isFormUrlEncoded = false }) => {
   try {
+    const headers = {
+      ...(isFormUrlEncoded
+        ? { "Content-Type": "application/x-www-form-urlencoded" } // Formで送信したい時（signup）に使用
+        : { "Content-Type": "application/json" }),
+      ...(token && { Authorization: `Bearer ${token}` }), // トークンが存在する場合のみ設定
+    };
+
     const response = await axios({
       method: method,
       url: apiBaseUrl + apiEndpoint,
       data: data,
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token && {'Authorization': `Bearer ${token}`}), // トークンが存在する場合のみ設定
-      },
-    });
+      headers: headers,
+      });
     // console.log("apiRequest.Response:", response);
     return response;
   } catch (error) {
@@ -30,6 +34,7 @@ const apiRequest = async({ method, apiEndpoint, data={}, token }) => {
     throw error;    
   }
 };
+
 
 // サインアップ
 export const signupRequest = async(name, email, password) => {
@@ -44,3 +49,22 @@ export const signupRequest = async(name, email, password) => {
   });
   return response;
 };
+
+// サインイン
+// メールアドレスでログインさせたいが、バックエンド側のOAuth2PasswordBearerが
+// usernameを受け取る必要があるため、メールアドレスをusernameとして送信する
+// OAuth2PasswordRequestForm は Formデータを受け取る仕様
+// →application/x-www-form-urlencodedを指定すれば、dataはaxiosで自動的に対応形式にシリアライズされる
+export const signinRequest = async(email, password) => {
+  const response = await apiRequest({
+    method: "POST", 
+    apiEndpoint: apiPathUrl.signin, 
+    data: {
+      username: email,
+      password: password,
+    },
+    isFormUrlEncoded: true,
+  });
+  return response;
+};
+

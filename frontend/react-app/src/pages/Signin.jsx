@@ -1,13 +1,15 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from '@hookform/resolvers/zod';
 import susumeruLogo from "../assets/susumeru_logo.svg";
+import { signinRequest } from "../repositories/Requests";
 
 const Signin = () => {
   // 入力フォームのバリデーション
   const signinSchema = z.object({
-    username: z
+    email: z
       .string()
       .nonempty("メールアドレスは必須です")
       .email("メールドレスの形式が正しくありません")
@@ -18,11 +20,32 @@ const Signin = () => {
       .max(128, "128文字以下で入力して下さい"),
   });
 
+  const [requestError, setRequestError] = useState("");
+  const navigate = useNavigate();
   const { 
     register, handleSubmit, formState: { errors } 
   } = useForm({ mode: "onChange", resolver: zodResolver(signinSchema), });
 
-  const onSubmit = (data) => console.log(data);
+  // const handleSignin = (data) => console.log(data);
+
+  // サインイン処理
+  const handleSignin = async(data) => {
+    setRequestError("");
+    try {
+      const response = await signinRequest(data.email, data.password);
+      console.log(response);
+      // navigate("/books/list");
+    } catch (error) {
+      if (error.response) {
+        // 2xx以外のHTTPステータスがレスポンスで返ってきた場合
+        setRequestError("登録に失敗しました");      
+      } else {
+        // レスポンスがない場合
+        setRequestError("通信エラーです");
+      }
+    }  
+  };
+
 
   return (
     <div className="bg-myPaleBlue text-textBlack font-roundedMplus font-medium min-h-screen">
@@ -31,21 +54,19 @@ const Signin = () => {
         <h1 className="mb-10 text-xl text-center">
           ログイン
         </h1>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-10">
+        <form onSubmit={handleSubmit(handleSignin)} className="space-y-10">
           <div className="flex flex-col gap-2">
             <label htmlFor="email">
               メールアドレス
             </label>
-            {/* メールアドレスでログインさせたいが、バックエンド側のOAuth2PasswordBearerが
-            usernameで受け取る必要があるため、メールアドレスをusernameとして送信する */}
             <input
-              {...register("username")} 
+              {...register("email")} 
               id="email" 
               type="email" 
               placeholder="Email" 
               className="px-3 py-0.5 rounded-lg shadow-lg text-lg focus:outline-none"
               />
-            <p className="text-myRed text-sm">{errors.username?.message}</p>
+            <p className="text-myRed text-sm">{errors.email?.message}</p>
           </div>
           <div className="flex flex-col gap-2">
             <label htmlFor="password">
@@ -59,6 +80,7 @@ const Signin = () => {
               className="px-3 py-0.5 rounded-lg shadow-lg text-lg focus:outline-none"
               />
             <p className="text-myRed text-sm">{errors.password?.message}</p>
+            {requestError && (<p className="text-myRed text-center">{requestError}</p>)}
           </div>
           <div className="flex justify-center">
             <button 
