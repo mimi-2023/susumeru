@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Link } from "react-router-dom";
 import susumeruLogo from "../assets/susumeru_logo.svg";
 import hamburgerIcon from "../assets/hamburger.svg";
@@ -6,9 +6,17 @@ import bookIcon from "../assets/book.svg";
 import plusIcon from "../assets/plus.svg";
 import userIcon from "../assets/user.svg";
 import logoutIcon from "../assets/logout.svg";
+import { SessionContext } from '../repositories/SessionProvider';
 
 const Header = () => {
   const [openMenu, setOpenMenu] = useState(false);
+  const { setCurrentUser } = useContext(SessionContext);
+
+  // サインアウト
+  const signout = () => {
+    localStorage.removeItem("access_token");
+    setCurrentUser(null);
+  };
 
   return (
     <header className="flex justify-between relative">
@@ -49,10 +57,10 @@ const Header = () => {
               </Link>
             </li>
             <li>
-              <Link to="" className="flex items-center gap-5 transition hover:opacity-40">
+              <button onClick={signout} className="flex items-center gap-5 transition hover:opacity-40">
                 <img src={logoutIcon} alt="ログアウト" />
                 <p>ログアウト</p>
-              </Link>
+              </button>
             </li>
           </ul>
         </nav> 
