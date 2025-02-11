@@ -8,6 +8,7 @@ import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
 import User from "./pages/User";
 import BooksList from "./pages/BooksList";
+import ProtectedRoute from "./repositories/ProtectedRoute";
 // import './App.css'
 
 const router = createBrowserRouter(
@@ -15,8 +16,9 @@ const router = createBrowserRouter(
     <>
       <Route path="/signin" element={<Signin />} />
       <Route path="/signup" element={<Signup />} />
-      <Route path="/user" element={<User />} />
-      <Route path="/books/list" element={<BooksList />} />
+      {/* ProtectedRoute で保護 */}
+      <Route path="/user" element={<ProtectedRoute><User /></ProtectedRoute>} />
+      <Route path="/books/list" element={<ProtectedRoute><BooksList /></ProtectedRoute>} />
     </>
   )
 )

@@ -68,3 +68,13 @@ export const signinRequest = async(email, password) => {
   return response;
 };
 
+// ユーザー情報の取得
+export const getUserRequest = async(token) => {
+  const response = await apiRequest({
+    method: "GET", 
+    apiEndpoint: apiPathUrl.user, 
+    token : token,
+  });
+  return response;
+};
+

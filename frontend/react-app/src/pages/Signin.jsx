@@ -1,10 +1,11 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useContext, useState } from "react";
+import { Link, Navigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from '@hookform/resolvers/zod';
 import susumeruLogo from "../assets/susumeru_logo.svg";
-import { signinRequest } from "../repositories/Requests";
+import { getUserRequest, signinRequest } from "../repositories/Requests";
+import { SessionContext } from "../repositories/SessionProvider";
 
 const Signin = () => {
   // 入力フォームのバリデーション
@@ -21,24 +22,27 @@ const Signin = () => {
   });
 
   const [requestError, setRequestError] = useState("");
-  const navigate = useNavigate();
+  const { currentUser, setCurrentUser } = useContext(SessionContext);
   const { 
     register, handleSubmit, formState: { errors } 
   } = useForm({ mode: "onChange", resolver: zodResolver(signinSchema), });
-
-  // const handleSignin = (data) => console.log(data);
 
   // サインイン処理
   const handleSignin = async(data) => {
     setRequestError("");
     try {
-      const response = await signinRequest(data.email, data.password);
-      console.log(response);
-      // navigate("/books/list");
+      const signinResponse = await signinRequest(data.email, data.password);
+      // JWTをlocalstrageに保存
+      const token = signinResponse.data.access_token;
+      localStorage.setItem("access_token", token);
+      // ユーザー情報を取得しstateに保存
+      const userResponse = await getUserRequest(token);
+      setCurrentUser(userResponse.data);
+
     } catch (error) {
       if (error.response) {
         // 2xx以外のHTTPステータスがレスポンスで返ってきた場合
-        setRequestError("登録に失敗しました");      
+        setRequestError("ログインに失敗しました");      
       } else {
         // レスポンスがない場合
         setRequestError("通信エラーです");
@@ -46,6 +50,7 @@ const Signin = () => {
     }  
   };
 
+  if(currentUser) return <Navigate replace to="/books/list" />;
 
   return (
     <div className="bg-myPaleBlue text-textBlack font-roundedMplus font-medium min-h-screen">

@@ -1,15 +1,11 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import UpdateUserName from "../modals/UpdateUserName";
 import pencilIcon from "../assets/pencil.svg";
+import { SessionContext } from '../repositories/SessionProvider';
 
 const UserInfo = () => {
-  // 仮のレスポンスデータ
-  const user = {
-    "name": "user1",
-    "email": "user1@example.com"
-  }
-
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { currentUser, setCurrentUser } = useContext(SessionContext);
 
   return (
     <>
@@ -33,11 +29,11 @@ const UserInfo = () => {
           </div>
           <div className="space-y-2">
             <h4>ユーザー名</h4>
-            <p className="font-normal">{user.name}</p>
+            <p className="font-normal">{currentUser.name}</p>
           </div>        
           <div className="space-y-2">
             <h4>メールアドレス</h4>
-            <p className="font-normal">{user.email}</p>
+            <p className="font-normal">{currentUser.email}</p>
           </div>
           
         </div>

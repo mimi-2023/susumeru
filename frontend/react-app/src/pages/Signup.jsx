@@ -1,10 +1,11 @@
-import { useState } from 'react';
-import { Link, useNavigate } from "react-router-dom";
+import { useContext, useState } from 'react';
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from '@hookform/resolvers/zod';
 import susumeruLogo from "../assets/susumeru_logo.svg";
 import { signupRequest } from "../repositories/Requests";
+import { SessionContext } from '../repositories/SessionProvider';
 
 const Signup = () => {
   // 入力フォームのバリデーション
@@ -34,6 +35,7 @@ const Signup = () => {
 
   const [requestError, setRequestError] = useState("");
   const navigate = useNavigate();
+  const { currentUser } = useContext(SessionContext);
   const { 
     register, handleSubmit, formState: { errors } 
   } = useForm({ mode: "onChange", resolver: zodResolver(signupSchema), });
@@ -54,6 +56,8 @@ const Signup = () => {
       }
     }  
   };
+
+  if(currentUser) return <Navigate replace to="/books/list" />;
 
   return (
     <div className="bg-myPaleBlue text-textBlack font-roundedMplus font-medium min-h-screen">
