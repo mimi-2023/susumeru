@@ -78,3 +78,15 @@ export const getUserRequest = async(token) => {
   return response;
 };
 
+// ユーザー名の変更
+export const updateUsernameRequest = async(token, newname) => {
+  const response = await apiRequest({
+    method: "PUT", 
+    apiEndpoint: apiPathUrl.user,
+    token : token, 
+    data: {
+      name: newname,
+    }, 
+  });
+  return response;
+};

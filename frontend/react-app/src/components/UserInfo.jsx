@@ -1,16 +1,16 @@
 import { useContext, useState } from 'react';
-import UpdateUserName from "../modals/UpdateUserName";
+import UpdateUsername from "../modals/UpdateUsername";
 import pencilIcon from "../assets/pencil.svg";
 import { SessionContext } from '../repositories/SessionProvider';
 
 const UserInfo = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { currentUser, setCurrentUser } = useContext(SessionContext);
+  const { currentUser } = useContext(SessionContext);
 
   return (
     <>
       {/* モーダル画面 */}
-      <UpdateUserName 
+      <UpdateUsername 
           isModalOpen={isModalOpen}
           onModalClose={() => setIsModalOpen(false)}
           />

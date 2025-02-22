@@ -30,10 +30,6 @@ const Header = () => {
         </button>
         {/* 背景をグレーアウトするか検討中。しないなら、以下のdivは消す */}
         <div className="">
-        {/* <nav className={openMenu 
-          ? "bg-myPaleBlue p-8 absolute z-10 top-20 left-0 space-y-8 shadow-lg md:shadow-none" 
-          : "hidden bg-myPaleBlue p-8 absolute z-10 top-20 left-0 space-y-8 md:block"
-        }> */}
         <nav 
           className={`bg-myPaleBlue p-8 absolute z-10 top-20 left-0 space-y-8 shadow-lg md:shadow-none md:block 
           ${openMenu ? "block" : "hidden"}`}
