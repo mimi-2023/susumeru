@@ -1,6 +1,7 @@
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { toast } from 'react-toastify';
 import { z } from "zod";
 import { zodResolver } from '@hookform/resolvers/zod';
 import susumeruLogo from "../assets/susumeru_logo.svg";
@@ -33,7 +34,6 @@ const Signup = () => {
       path: ["password2"],
     });
 
-  const [requestError, setRequestError] = useState("");
   const navigate = useNavigate();
   const { currentUser } = useContext(SessionContext);
   const { 
@@ -42,17 +42,17 @@ const Signup = () => {
 
   // サインアップ処理
   const handleSignup = async(data) => {
-    setRequestError("");
     try {
       const response = await signupRequest(data.name, data.email, data.password);
+      toast.success("ユーザー登録に成功しました");
       navigate("/signin");
     } catch (error) {
       if (error.response) {
         // 2xx以外のHTTPステータスがレスポンスで返ってきた場合
-        setRequestError("登録に失敗しました");      
+        toast.error("登録に失敗しました");     
       } else {
         // レスポンスがない場合
-        setRequestError("通信エラーです");
+        toast.error("通信エラーです");
       }
     }  
   };
@@ -117,8 +117,7 @@ const Signup = () => {
               placeholder="Password(confirm)" 
               className="px-3 py-0.5 rounded-lg shadow-lg text-lg focus:outline-none"
               />
-            <p className="text-myRed text-sm">{errors.password2?.message}</p>
-            {requestError && (<p className="text-myRed text-center">{requestError}</p>)}  
+            <p className="text-myRed text-sm">{errors.password2?.message}</p> 
           </div>
           <div className="flex justify-center">
             <button 

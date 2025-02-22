@@ -1,5 +1,6 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from 'react-toastify';
 import { z } from "zod";
 import { zodResolver } from '@hookform/resolvers/zod';
 import pencilIcon from "../assets/pencil.svg";
@@ -20,30 +21,30 @@ const UpdateUserName = ({ isModalOpen, onModalClose }) => {
   
   const token = localStorage.getItem("access_token");
   const { setCurrentUser } = useContext(SessionContext);
-  const [requestError, setRequestError] = useState("");
   const { 
       register, handleSubmit, reset, formState: { errors } 
     } = useForm({ mode: "onChange", resolver: zodResolver(UpdateUsernameSchema), });
   
   // ユーザー名の変更処理
   const handleUpdateUsername = async(data) => {
-    setRequestError("");
     try {     
       const response = await updateUsernameRequest(token, data.newname);
       setCurrentUser(response.data);
+      toast.success("ユーザー名を変更しました");
       reset();
       onModalClose();
     } catch (error) {
       if (error.response.status == 401) {
         // 401"Unauthorized"のHTTPステータスがレスポンスで返ってきた場合→サインアウト
+        toast.warning("認証に失敗しました");
         localStorage.removeItem("access_token");
         setCurrentUser(null);     
-      } if (error.response) {
+      } else if (error.response) {
         // 2xxと401以外のHTTPステータスがレスポンスで返ってきた場合
-        setRequestError("登録に失敗しました");      
+        toast.error("登録に失敗しました");     
       } else {
         // レスポンスがない場合
-        setRequestError("通信エラーです");
+        toast.error("通信エラーです");
       }
     }  
   };
@@ -70,7 +71,6 @@ const UpdateUserName = ({ isModalOpen, onModalClose }) => {
                 className="w-full px-3 py-0.5 rounded-lg shadow-lg text-lg focus:outline-none"
                 />
               <p className="text-myRed text-sm">{errors.newname?.message}</p>
-              {requestError && (<p className="text-myRed text-center">{requestError}</p>)} 
             </div>
             <div className="flex justify-between mx-auto w-11/12">
               <button 

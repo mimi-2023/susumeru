@@ -1,6 +1,7 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { toast } from 'react-toastify';
 import { z } from "zod";
 import { zodResolver } from '@hookform/resolvers/zod';
 import susumeruLogo from "../assets/susumeru_logo.svg";
@@ -21,7 +22,6 @@ const Signin = () => {
       .max(128, "128文字以下で入力して下さい"),
   });
 
-  const [requestError, setRequestError] = useState("");
   const { currentUser, setCurrentUser } = useContext(SessionContext);
   const { 
     register, handleSubmit, formState: { errors } 
@@ -29,7 +29,6 @@ const Signin = () => {
 
   // サインイン処理
   const handleSignin = async(data) => {
-    setRequestError("");
     try {
       const signinResponse = await signinRequest(data.email, data.password);
       // JWTをlocalstrageに保存
@@ -40,12 +39,15 @@ const Signin = () => {
       setCurrentUser(userResponse.data);
 
     } catch (error) {
-      if (error.response) {
-        // 2xx以外のHTTPステータスがレスポンスで返ってきた場合
-        setRequestError("ログインに失敗しました");      
+      if (error.response.status == 401) {
+        // 401"Unauthorized"のHTTPステータスがレスポンスで返ってきた場合
+        toast.error("メールアドレスまたはパスワードが正しくありません");    
+      } else if (error.response) {
+        // 2xxと401以外のHTTPステータスがレスポンスで返ってきた場合
+        toast.error("ログインに失敗しました");     
       } else {
         // レスポンスがない場合
-        setRequestError("通信エラーです");
+        toast.error("通信エラーです");
       }
     }  
   };
@@ -85,7 +87,6 @@ const Signin = () => {
               className="px-3 py-0.5 rounded-lg shadow-lg text-lg focus:outline-none"
               />
             <p className="text-myRed text-sm">{errors.password?.message}</p>
-            {requestError && (<p className="text-myRed text-center">{requestError}</p>)}
           </div>
           <div className="flex justify-center">
             <button 
