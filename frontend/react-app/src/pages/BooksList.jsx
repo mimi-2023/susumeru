@@ -1,4 +1,5 @@
 import Header from "../components/Header";
+import BookTitle from "../components/BookTitle";
 
 
 const BooksList = () => {
@@ -7,8 +8,8 @@ const BooksList = () => {
       <div className="mx-auto pt-5 w-11/12">
         <Header />
         {/* 本の情報表示ではgridレイアウト使うので、以下のdivはそれに合わせてあとで調整する */}
-        <div className="mx-auto max-w-[750px]">
-          Books List
+        <div className="mx-auto max-w-[750px] md:ml-[300px]">
+          <BookTitle />
         </div>        
       </div>
     </div>
