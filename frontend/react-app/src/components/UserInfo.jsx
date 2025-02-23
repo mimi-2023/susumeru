@@ -15,7 +15,7 @@ const UserInfo = () => {
           onModalClose={() => setIsModalOpen(false)}
           />
       {/* メイン画面 */}
-      <div className="bg-white max-w-[360px] min-h-[280px] rounded-2xl shadow-lg">
+      <div className="bg-white w-full max-w-[360px] min-h-[280px] rounded-2xl shadow-lg">
         <div className="mx-auto py-5 w-5/6 space-y-5">
           <div className="flex justify-between text-myMediumBlue text-xl font-extrabold">
             <h3>ユーザー情報</h3>

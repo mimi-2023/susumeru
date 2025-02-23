@@ -1,6 +1,6 @@
 import { CircularProgressbarWithChildren, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import book_orange from "../assets/book_orange.svg";
+import bookOrangeIcon from "../assets/book_orange.svg";
 
 const ProgressPercent = () => {
   // 仮の進捗率
@@ -17,7 +17,7 @@ const ProgressPercent = () => {
         })}
         className="relative"
       >
-        <img src={book_orange} alt="book" className="absolute" />
+        <img src={bookOrangeIcon} alt="book" className="absolute" />
         <div className="absolute text-xs font-extrabold">
           {progress}%
         </div>
