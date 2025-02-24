@@ -69,7 +69,7 @@ export const signinRequest = async(email, password) => {
 };
 
 // ユーザー情報の取得
-export const getUserRequest = async(token) => {
+export const fetchUserRequest = async(token) => {
   const response = await apiRequest({
     method: "GET", 
     apiEndpoint: apiPathUrl.user, 

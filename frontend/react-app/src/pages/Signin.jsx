@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { z } from "zod";
 import { zodResolver } from '@hookform/resolvers/zod';
 import susumeruLogo from "../assets/susumeru_logo.svg";
-import { getUserRequest, signinRequest } from "../repositories/Requests";
+import { fetchUserRequest, signinRequest } from "../repositories/Requests";
 import { SessionContext } from "../repositories/SessionProvider";
 
 const Signin = () => {
@@ -35,7 +35,7 @@ const Signin = () => {
       const token = signinResponse.data.access_token;
       localStorage.setItem("access_token", token);
       // ユーザー情報を取得しstateに保存
-      const userResponse = await getUserRequest(token);
+      const userResponse = await fetchUserRequest(token);
       setCurrentUser(userResponse.data);
 
     } catch (error) {

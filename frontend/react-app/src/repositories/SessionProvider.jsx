@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import { getUserRequest } from "./Requests";
+import { fetchUserRequest } from "./Requests";
 
 const SessionContext = createContext();
 
@@ -13,14 +13,17 @@ const SessionProvider = ({ children }) => {
 
   const setSession = async () => {
     const token = localStorage.getItem("access_token");
+    // トークンがなければcurrentUserが空のままreturn→signinへ遷移する
     if (!token) {
       setIsLoading(false);
       return;
     }
+    // トークンがあればuser情報をリクエスト→認証できればcurrentUserをセット
     try {
-      const response = await getUserRequest(token);
+      const response = await fetchUserRequest(token);
       setCurrentUser(response.data);
     } catch (error) {
+      // 認証できなければcurrentUserは空のまま、トークンを削除
       localStorage.removeItem("access_token");
     } finally {
       setIsLoading(false);
@@ -29,6 +32,8 @@ const SessionProvider = ({ children }) => {
 
   if (isLoading) return <div>...is Loading</div>
 
+  // currentUserを子要素で参照可能にする
+  // 子要素側はcurrentUserが空であれば、ProtectedRouteによりsigninへ遷移する
   return (
     <SessionContext.Provider value={{ currentUser, setCurrentUser }}>
       {children}
