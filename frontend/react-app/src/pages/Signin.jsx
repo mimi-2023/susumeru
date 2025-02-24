@@ -30,13 +30,13 @@ const Signin = () => {
   // サインイン処理
   const handleSignin = async(data) => {
     try {
-      const signinResponse = await signinRequest(data.email, data.password);
+      const signinResult = await signinRequest(data.email, data.password);
       // JWTをlocalstrageに保存
-      const token = signinResponse.data.access_token;
+      const token = signinResult.data.access_token;
       localStorage.setItem("access_token", token);
       // ユーザー情報を取得しstateに保存
-      const userResponse = await fetchUserRequest(token);
-      setCurrentUser(userResponse.data);
+      const userResult = await fetchUserRequest(token);
+      setCurrentUser(userResult.data);
 
     } catch (error) {
       if (error.response.status == 401) {

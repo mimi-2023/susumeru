@@ -90,3 +90,13 @@ export const updateUsernameRequest = async(token, newname) => {
   });
   return response;
 };
+
+// 本一覧の取得
+export const fetchBooksListRequest = async(token) => {
+  const response = await apiRequest({
+    method: "GET", 
+    apiEndpoint: apiPathUrl.books, 
+    token : token,
+  });
+  return response;
+};

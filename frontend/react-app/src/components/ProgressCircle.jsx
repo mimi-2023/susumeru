@@ -2,14 +2,12 @@ import { CircularProgressbarWithChildren, buildStyles } from 'react-circular-pro
 import 'react-circular-progressbar/dist/styles.css';
 import bookOrangeIcon from "../assets/book_orange.svg";
 
-const ProgressPercent = () => {
-  // 仮の進捗率
-  const progress = 80;
-
+const ProgressCircle = ({ progressPercent }) => {
+  
   return (
     <>
       <CircularProgressbarWithChildren 
-        value={progress}
+        value={progressPercent}
         styles={buildStyles({
           // Colors
           pathColor: "#FFB800",
@@ -19,11 +17,11 @@ const ProgressPercent = () => {
       >
         <img src={bookOrangeIcon} alt="book" className="absolute" />
         <div className="absolute text-xs font-extrabold">
-          {progress}%
+          {progressPercent}%
         </div>
       </CircularProgressbarWithChildren>
     </>
   )
 };
 
-export default ProgressPercent;
+export default ProgressCircle;

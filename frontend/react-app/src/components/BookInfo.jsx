@@ -1,15 +1,8 @@
 import { useState } from "react";
-import dayjs from 'dayjs';
 import pencilIcon from "../assets/pencil.svg";
 
-const BookInfo = () => {
+const BookInfo = ({ bookInfo, updateBookInfo }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // 仮のデータ
-  const firstPage = 20;
-  const lastPage = 252;
-  const target = 25;
-  const targetFinishDate = dayjs("2024/05/20");
 
   return (
     <>
@@ -19,15 +12,15 @@ const BookInfo = () => {
             <div className="w-full">
               <div className="flex justify-between">
                 <p>本文</p>
-                <p>{lastPage - firstPage + 1}ページ（{firstPage}～{lastPage}）</p>
+                <p>{bookInfo.lastPage - bookInfo.firstPage + 1}ページ（{bookInfo.firstPage}～{bookInfo.lastPage}）</p>
               </div>
               <div className="flex justify-between">
                 <p>目標ページ数</p>
-                <p>{target}ページ／日</p>
+                <p>{bookInfo.targetPages}ページ／日</p>
               </div>
               <div className="flex justify-between">
                 <p>目標完了日</p>
-                <p>{targetFinishDate.format('YYYY[年]M[月]D[日]')}</p>
+                <p>{bookInfo.finishDate.format('YYYY[年]M[月]D[日]')}</p>
               </div>
             </div>
             <button 

@@ -28,8 +28,8 @@ const UpdateUserName = ({ isModalOpen, onModalClose }) => {
   // ユーザー名の変更処理
   const handleUpdateUsername = async(data) => {
     try {     
-      const response = await updateUsernameRequest(token, data.newname);
-      setCurrentUser(response.data);
+      const result = await updateUsernameRequest(token, data.newname);
+      setCurrentUser(result.data);
       toast.success("ユーザー名を変更しました");
       reset();
       onModalClose();

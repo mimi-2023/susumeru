@@ -43,7 +43,7 @@ const Signup = () => {
   // サインアップ処理
   const handleSignup = async(data) => {
     try {
-      const response = await signupRequest(data.name, data.email, data.password);
+      const result = await signupRequest(data.name, data.email, data.password);
       toast.success("ユーザー登録に成功しました");
       navigate("/signin");
     } catch (error) {

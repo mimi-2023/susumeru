@@ -20,8 +20,8 @@ const SessionProvider = ({ children }) => {
     }
     // トークンがあればuser情報をリクエスト→認証できればcurrentUserをセット
     try {
-      const response = await fetchUserRequest(token);
-      setCurrentUser(response.data);
+      const result = await fetchUserRequest(token);
+      setCurrentUser(result.data);
     } catch (error) {
       // 認証できなければcurrentUserは空のまま、トークンを削除
       localStorage.removeItem("access_token");

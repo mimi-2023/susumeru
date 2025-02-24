@@ -1,7 +1,7 @@
-import ProgressPercent from "./ProgressPercent";
+import ProgressCircle from "./ProgressCircle";
 
 
-const BookTitle = () => {
+const BookTitle = ({ title, progress }) => {
 
   return (
     <>
@@ -9,9 +9,9 @@ const BookTitle = () => {
         <div className="flex items-center mx-auto min-h-[100px] w-5/6">
           <div className="flex items-center space-x-6 text-xl">
             <div className="size-[63px] flex-shrink-0">
-              <ProgressPercent />
+              <ProgressCircle progressPercent={progress} />
             </div>
-            <p>基本情報技術者教室</p>          
+            <p>{title}</p>          
           </div>     
         </div>
       </div>
