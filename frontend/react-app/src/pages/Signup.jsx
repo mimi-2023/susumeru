@@ -14,16 +14,16 @@ const Signup = () => {
     .object({
       name: z
         .string()
-        .nonempty("ユーザー名は必須です")
+        .min(1, "ユーザー名は必須です")
         .max(64, "64文字以下で入力して下さい"),
       email: z
         .string()
-        .nonempty("メールアドレスは必須です")
+        .min(1, "メールアドレスは必須です")
         .email("メールドレスの形式が正しくありません")
         .max(64, "64文字以下で入力して下さい"),
       password: z
         .string()
-        .nonempty("パスワードは必須です")
+        .min(1, "パスワードは必須です")
         .min(8, "8文字以上で入力して下さい")
         .max(128, "128文字以下で入力して下さい"),
       password2: z

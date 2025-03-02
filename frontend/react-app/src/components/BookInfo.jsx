@@ -1,4 +1,5 @@
 import { useState } from "react";
+import UpdateTargetPages from "../modals/UpdateTargetPages";
 import pencilIcon from "../assets/pencil.svg";
 
 const BookInfo = ({ bookInfo, updateBookInfo }) => {
@@ -6,6 +7,14 @@ const BookInfo = ({ bookInfo, updateBookInfo }) => {
 
   return (
     <>
+      {/* モーダル画面 */}
+      <UpdateTargetPages 
+          isModalOpen={isModalOpen}
+          setIsModalOpen={setIsModalOpen}
+          bookInfo={bookInfo}
+          updateBookInfo={updateBookInfo}
+          />
+      {/* メイン画面 */}
       <div className="bg-white w-full max-w-[360px] min-h-[100px] rounded-2xl shadow-lg">
         <div className="flex items-center mx-auto min-h-[100px] w-5/6">
           <div className="flex justify-between gap-5 items-start w-full">

@@ -13,12 +13,12 @@ const Signin = () => {
   const signinSchema = z.object({
     email: z
       .string()
-      .nonempty("メールアドレスは必須です")
+      .min(1, "メールアドレスは必須です")
       .email("メールドレスの形式が正しくありません")
       .max(64, "64文字以下で入力して下さい"),
     password: z
       .string()
-      .nonempty("パスワードは必須です")
+      .min(1, "パスワードは必須です")
       .max(128, "128文字以下で入力して下さい"),
   });
 

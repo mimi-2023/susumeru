@@ -35,7 +35,7 @@ const BooksList = () => {
         <div className="space-y-2 md:ml-[300px]">
           {booksList.map((book) => {
             return (
-              <div key={book.book_id} className="space-y-2 md:flex md:space-x-2 md:space-y-0">
+              <div key={book.book_id} className="space-y-2 md:flex md:gap-2 md:space-y-0">
                 <BookItem book={book} />
               </div>
               )

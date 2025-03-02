@@ -9,13 +9,13 @@ import { updateUsernameRequest } from "../repositories/Requests";
 
 
 // eslint-disable-next-line react/prop-types
-const UpdateUserName = ({ isModalOpen, onModalClose }) => {
+const UpdateUserName = ({ isModalOpen, setIsModalOpen }) => {
   // 入力フォームのバリデーション
   const UpdateUsernameSchema = z
     .object({
       newname: z
         .string()
-        .nonempty("ユーザー名は必須です")
+        .min(1, "ユーザー名は必須です")
         .max(64, "64文字以下で入力して下さい"),
     });
   
@@ -24,6 +24,12 @@ const UpdateUserName = ({ isModalOpen, onModalClose }) => {
   const { 
       register, handleSubmit, reset, formState: { errors } 
     } = useForm({ mode: "onChange", resolver: zodResolver(UpdateUsernameSchema), });
+
+  // モーダルを閉じる
+  const onModalClose = () => {
+    reset();
+    setIsModalOpen(false);
+  };
   
   // ユーザー名の変更処理
   const handleUpdateUsername = async(data) => {
@@ -31,7 +37,6 @@ const UpdateUserName = ({ isModalOpen, onModalClose }) => {
       const result = await updateUsernameRequest(token, data.newname);
       setCurrentUser(result.data);
       toast.success("ユーザー名を変更しました");
-      reset();
       onModalClose();
     } catch (error) {
       if (error.response.status == 401) {
@@ -51,8 +56,8 @@ const UpdateUserName = ({ isModalOpen, onModalClose }) => {
 
   return isModalOpen ? (
     <>
-      <div className="bg-myPaleBlue absolute z-20 min-w-[340px] min-h-[260px] rounded-2xl shadow-lg top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-        <div className="mx-auto pt-5 w-5/6 space-y-8">
+      <div className="bg-myPaleBlue absolute z-20 w-[340px] min-h-[260px] rounded-2xl shadow-lg top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+        <div className="mx-auto py-8 w-5/6 space-y-8">
           <div className="flex items-center gap-2 text-myDeepBlue font-extrabold">
             <img src={pencilIcon} alt="pencil" className="size-6" />
             <p>ユーザー名を変更する</p>

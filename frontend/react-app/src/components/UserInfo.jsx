@@ -12,7 +12,7 @@ const UserInfo = () => {
       {/* モーダル画面 */}
       <UpdateUsername 
           isModalOpen={isModalOpen}
-          onModalClose={() => setIsModalOpen(false)}
+          setIsModalOpen={setIsModalOpen}
           />
       {/* メイン画面 */}
       <div className="bg-white w-full max-w-[360px] min-h-[280px] rounded-2xl shadow-lg">

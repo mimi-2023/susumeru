@@ -16,6 +16,7 @@ const BookItem = ({ book }) => {
   const [bookInfo, setBookInfo] = useState({
     firstPage: book.first_page,
     lastPage: book.last_page,
+    currentPage: book.latest_current_page,
     targetPages: book.latest_target,
     finishDate: finishDate({
       startDate: dayjs(book.latest_target_startdate), 
