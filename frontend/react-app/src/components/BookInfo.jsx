@@ -2,7 +2,7 @@ import { useState } from "react";
 import UpdateTargetPages from "../modals/UpdateTargetPages";
 import pencilIcon from "../assets/pencil.svg";
 
-const BookInfo = ({ bookInfo, updateBookInfo }) => {
+const BookInfo = ({ bookInfo, updateTargetPages }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
@@ -12,7 +12,7 @@ const BookInfo = ({ bookInfo, updateBookInfo }) => {
           isModalOpen={isModalOpen}
           setIsModalOpen={setIsModalOpen}
           bookInfo={bookInfo}
-          updateBookInfo={updateBookInfo}
+          updateTargetPages={updateTargetPages}
           />
       {/* メイン画面 */}
       <div className="bg-white w-full max-w-[360px] min-h-[100px] rounded-2xl shadow-lg">

@@ -100,3 +100,16 @@ export const fetchBooksListRequest = async(token) => {
   });
   return response;
 };
+
+// 目標ページ数の変更
+export const updateTargetPagesRequest = async(token, bookId, newTargetPages) => {
+  const response = await apiRequest({
+    method: "PUT", 
+    apiEndpoint: apiPathUrl.target_settings + "/" + bookId,
+    token : token, 
+    data: {
+      target_pages: newTargetPages,
+    }, 
+  });
+  return response;
+};

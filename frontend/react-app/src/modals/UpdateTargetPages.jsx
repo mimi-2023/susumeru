@@ -1,17 +1,18 @@
+import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from 'react-toastify';
 import { z } from "zod";
 import { zodResolver } from '@hookform/resolvers/zod';
 import pencilIcon from "../assets/pencil.svg";
 import { SessionContext } from '../repositories/SessionProvider';
-import { updateUsernameRequest } from "../repositories/Requests";
+import { updateTargetPagesRequest } from "../repositories/Requests";
 import dayjs from "dayjs";
 import { finishDate } from "../repositories/utils";
 
 
 // eslint-disable-next-line react/prop-types
 const UpdateTargetPages = ({ 
-  isModalOpen, setIsModalOpen, bookInfo, updateBookInfo 
+  isModalOpen, setIsModalOpen, bookInfo, updateTargetPages 
 }) => {
   // 入力フォームのバリデーション
   const UpdateTargetPagesSchema = z
@@ -24,6 +25,7 @@ const UpdateTargetPages = ({
     });
   
   const token = localStorage.getItem("access_token");
+  const { setCurrentUser } = useContext(SessionContext);
   const { 
       register, watch, handleSubmit, reset, formState: { errors } 
     } = useForm({ mode: "onChange", resolver: zodResolver(UpdateTargetPagesSchema), });
@@ -45,26 +47,25 @@ const UpdateTargetPages = ({
   
   // 目標ページ数の変更処理
   const handleUpdateTargetPages = async(data) => {
-    console.log(data);
-    // try {     
-    //   const result = await updateUsernameRequest(token, data.newname);
-    //   setCurrentUser(result.data);
-    //   toast.success("ユーザー名を変更しました");
-    //   onModalClose();
-    // } catch (error) {
-    //   if (error.response.status == 401) {
-    //     // 401"Unauthorized"のHTTPステータスがレスポンスで返ってきた場合→サインアウト
-    //     toast.warning("認証に失敗しました");
-    //     localStorage.removeItem("access_token");
-    //     setCurrentUser(null);     
-    //   } else if (error.response) {
-    //     // 2xxと401以外のHTTPステータスがレスポンスで返ってきた場合
-    //     toast.error("登録に失敗しました");     
-    //   } else {
-    //     // レスポンスがない場合
-    //     toast.error("通信エラーです");
-    //   }
-    // }  
+    try {     
+      const result = await updateTargetPagesRequest(token, bookInfo.bookId, data.newTargetPages);
+      updateTargetPages(result.data);
+      toast.success("目標ページ数を変更しました");
+      onModalClose();
+    } catch (error) {
+      if (error.response.status == 401) {
+        // 401"Unauthorized"のHTTPステータスがレスポンスで返ってきた場合→サインアウト
+        toast.warning("認証に失敗しました");
+        localStorage.removeItem("access_token");
+        setCurrentUser(null);     
+      } else if (error.response) {
+        // 2xxと401以外のHTTPステータスがレスポンスで返ってきた場合
+        toast.error("登録に失敗しました");     
+      } else {
+        // レスポンスがない場合
+        toast.error("通信エラーです");
+      }
+    }  
   };
 
   return isModalOpen ? (

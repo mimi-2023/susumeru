@@ -14,6 +14,7 @@ const BookItem = ({ book }) => {
   
   // 本の情報
   const [bookInfo, setBookInfo] = useState({
+    bookId: book.book_id,
     firstPage: book.first_page,
     lastPage: book.last_page,
     currentPage: book.latest_current_page,
@@ -26,15 +27,16 @@ const BookItem = ({ book }) => {
     }),
   });
   
-  const updateBookInfo = (newTargetPages) => {
+  // 目標ページ数のstate更新（APIレスポンスを使用）
+  const updateTargetPages = (data) => {
     setBookInfo(prev => ({ 
-      ...prev, 
-      targetPages: newTargetPages,
+      ...prev,
+      targetPages: data.target_pages,
       finishDate: finishDate({
-        startDate: dayjs(), 
-        startPage: book.latest_current_page,  // current_pageが変わらなければこれで良い。変更時は未対応。
+        startDate: dayjs(data.start_date), 
+        startPage: data.start_page,
         lastPage: book.last_page, 
-        targetPages: newTargetPages, 
+        targetPages: data.target_pages, 
       })
     }));
   };
@@ -43,7 +45,7 @@ const BookItem = ({ book }) => {
   return (
     <>
       <BookTitle title={book.title} progress={progress} />
-      <BookInfo bookInfo={bookInfo} onUpdate={updateBookInfo} />
+      <BookInfo bookInfo={bookInfo} updateTargetPages={updateTargetPages} />
     </>
   )
 };
