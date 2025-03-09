@@ -4,6 +4,7 @@ import pencilIcon from "../assets/pencil.svg";
 
 const BookInfo = ({ bookInfo, updateTargetPages }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const isFinished = bookInfo.currentPage === bookInfo.lastPage;
 
   return (
     <>
@@ -25,17 +26,18 @@ const BookInfo = ({ bookInfo, updateTargetPages }) => {
               </div>
               <div className="flex justify-between">
                 <p>目標ページ数</p>
-                <p>{bookInfo.targetPages}ページ／日</p>
+                <p>{isFinished ? "完了" : `${bookInfo.targetPages}ページ／日`}</p>
               </div>
               <div className="flex justify-between">
                 <p>目標完了日</p>
-                <p>{bookInfo.finishDate.format('YYYY[年]M[月]D[日]')}</p>
+                <p>{isFinished ? "完了" : bookInfo.finishDate.format('YYYY[年]M[月]D[日]')}</p>
               </div>
             </div>
             <button 
               type="button" 
               onClick={() => setIsModalOpen(true)}
-              className="transition hover:opacity-40"
+              disabled={isFinished}
+              className={!isFinished && "transition hover:opacity-40"}
               >
               <img src={pencilIcon} alt="本の情報を編集する" />
             </button>          
