@@ -68,9 +68,9 @@ async def get_books_list(db: AsyncSession, user_id: str):
     # GetBookResponseを作成し、response_listに追加してreturn
     response_list = []
     for book, target_startdate, target_pages, target_startpage, current_page in books:
-        # progressがなくcurrent_pageがNoneの場合は、first_pageをcurrent_pageとする
+        # progressがなくcurrent_pageがNoneの場合は、first_page-1をcurrent_pageとする
         if not current_page:
-            current_page = book.first_page
+            current_page = book.first_page - 1
         data = GetBookResponse(
             book_id = book.id,
             title = book.title,
@@ -127,9 +127,9 @@ async def get_book(db: AsyncSession, user_id: str, book_id: int):
     # 取得したbook_dataをunpack
     book, target_startdate, target_pages, target_startpage, current_page = book_data
 
-    # progressがなくcurrent_pageがNoneの場合は、first_pageをcurrent_pageとする
+    # progressがなくcurrent_pageがNoneの場合は、first_page-1をcurrent_pageとする
     if not current_page:
-        current_page = book.first_page
+        current_page = book.first_page - 1
 
     # GetBookResponseを作成してreturn
     return GetBookResponse(
