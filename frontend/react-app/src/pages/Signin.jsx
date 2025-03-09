@@ -25,7 +25,7 @@ const Signin = () => {
   const { currentUser, setCurrentUser } = useContext(SessionContext);
   const { 
     register, handleSubmit, formState: { errors } 
-  } = useForm({ mode: "onChange", resolver: zodResolver(signinSchema), });
+  } = useForm({ mode: "onSubmit", resolver: zodResolver(signinSchema), });
 
   // サインイン処理
   const handleSignin = async(data) => {

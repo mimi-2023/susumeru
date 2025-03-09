@@ -17,7 +17,6 @@ const BooksList = () => {
     try {
       const result = await fetchBooksListRequest(token);
       setBooksList(result.data);
-      // console.log(result.data);
     } catch (error) {
       // 認証できなければトークンを削除
       localStorage.removeItem("access_token");

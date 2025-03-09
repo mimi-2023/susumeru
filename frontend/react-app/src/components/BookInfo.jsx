@@ -37,7 +37,7 @@ const BookInfo = ({ bookInfo, updateTargetPages }) => {
               type="button" 
               onClick={() => setIsModalOpen(true)}
               disabled={isFinished}
-              className={!isFinished && "transition hover:opacity-40"}
+              className={isFinished ? "opacity-60" : "transition hover:opacity-40"}
               >
               <img src={pencilIcon} alt="本の情報を編集する" />
             </button>          

@@ -11,7 +11,7 @@ import { updateUsernameRequest } from "../repositories/Requests";
 // eslint-disable-next-line react/prop-types
 const UpdateUserName = ({ isModalOpen, setIsModalOpen }) => {
   // 入力フォームのバリデーション
-  const UpdateUsernameSchema = z
+  const updateUsernameSchema = z
     .object({
       newname: z
         .string()
@@ -23,7 +23,7 @@ const UpdateUserName = ({ isModalOpen, setIsModalOpen }) => {
   const { setCurrentUser } = useContext(SessionContext);
   const { 
       register, handleSubmit, reset, formState: { errors } 
-    } = useForm({ mode: "onChange", resolver: zodResolver(UpdateUsernameSchema), });
+    } = useForm({ mode: "onSubmit", resolver: zodResolver(updateUsernameSchema), });
 
   // モーダルを閉じる
   const onModalClose = () => {
@@ -56,7 +56,7 @@ const UpdateUserName = ({ isModalOpen, setIsModalOpen }) => {
 
   return isModalOpen ? (
     <>
-      <div className="bg-myPaleBlue absolute z-20 w-[340px] min-h-[260px] rounded-2xl shadow-lg top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+      <div className="bg-myPaleBlue absolute z-30 w-[340px] min-h-[260px] rounded-2xl shadow-lg top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
         <div className="mx-auto py-8 w-5/6 space-y-8">
           <div className="flex items-center gap-2 text-myDeepBlue font-extrabold">
             <img src={pencilIcon} alt="pencil" className="size-6" />
@@ -96,7 +96,7 @@ const UpdateUserName = ({ isModalOpen, setIsModalOpen }) => {
         </div>       
       </div>
       <div
-        className="fixed top-0 left-0 bg-black/70 w-full h-full z-10"
+        className="fixed top-0 left-0 bg-black/70 w-full h-full z-20"
         onClick={onModalClose}
       ></div>
     </>

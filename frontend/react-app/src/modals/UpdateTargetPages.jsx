@@ -1,13 +1,13 @@
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
+import dayjs from "dayjs";
 import { toast } from 'react-toastify';
 import { z } from "zod";
 import { zodResolver } from '@hookform/resolvers/zod';
-import pencilIcon from "../assets/pencil.svg";
 import { SessionContext } from '../repositories/SessionProvider';
 import { updateTargetPagesRequest } from "../repositories/Requests";
-import dayjs from "dayjs";
 import { finishDate } from "../repositories/utils";
+import pencilIcon from "../assets/pencil.svg";
 
 
 // eslint-disable-next-line react/prop-types
@@ -15,7 +15,7 @@ const UpdateTargetPages = ({
   isModalOpen, setIsModalOpen, bookInfo, updateTargetPages 
 }) => {
   // 入力フォームのバリデーション
-  const UpdateTargetPagesSchema = z
+  const updateTargetPagesSchema = z
     .object({
       newTargetPages: z.coerce
         .number()
@@ -28,7 +28,7 @@ const UpdateTargetPages = ({
   const { setCurrentUser } = useContext(SessionContext);
   const { 
       register, watch, handleSubmit, reset, formState: { errors } 
-    } = useForm({ mode: "onChange", resolver: zodResolver(UpdateTargetPagesSchema), });
+    } = useForm({ mode: "onSubmit", resolver: zodResolver(updateTargetPagesSchema), });
 
   // 新しい目標完了日を計算する
   const watchTargetPages = watch("newTargetPages", bookInfo.targetPages);
@@ -70,7 +70,7 @@ const UpdateTargetPages = ({
 
   return isModalOpen ? (
     <>
-      <div className="bg-myPaleBlue absolute z-20 w-[340px] min-h-[260px] rounded-2xl shadow-lg top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+      <div className="bg-myPaleBlue absolute z-30 w-[340px] min-h-[260px] rounded-2xl shadow-lg top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
         <div className="mx-auto py-8 w-5/6 space-y-8">
           <div className="flex items-center gap-2 text-myDeepBlue font-extrabold">
             <img src={pencilIcon} alt="pencil" className="size-6" />
@@ -125,7 +125,7 @@ const UpdateTargetPages = ({
         </div>       
       </div>
       <div
-        className="fixed top-0 left-0 bg-black/70 w-full h-full z-10"
+        className="fixed top-0 left-0 bg-black/70 w-full h-full z-20"
         onClick={onModalClose}
       ></div>
     </>

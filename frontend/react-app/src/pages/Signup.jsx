@@ -38,7 +38,7 @@ const Signup = () => {
   const { currentUser } = useContext(SessionContext);
   const { 
     register, handleSubmit, formState: { errors } 
-  } = useForm({ mode: "onChange", resolver: zodResolver(signupSchema), });
+  } = useForm({ mode: "onSubmit", resolver: zodResolver(signupSchema), });
 
   // サインアップ処理
   const handleSignup = async(data) => {

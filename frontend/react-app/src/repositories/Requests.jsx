@@ -113,3 +113,19 @@ export const updateTargetPagesRequest = async(token, bookId, newTargetPages) => 
   });
   return response;
 };
+
+// 本の新規登録
+export const createBookRequest = async(token, title, firstPage, lastPage, targetPages) => {
+  const response = await apiRequest({
+    method: "POST", 
+    apiEndpoint: apiPathUrl.books,
+    token : token, 
+    data: {
+      title: title,
+      first_page: firstPage,
+      last_page: lastPage,
+      target_pages: targetPages,
+    }, 
+  });
+  return response;
+};
