@@ -73,9 +73,8 @@ const CreateBook = ({ isModalOpen, setIsModalOpen }) => {
         data.lastPage,
         data.targetPages
       );
+      localStorage.setItem("toastMessage", "本を新規登録しました");
       window.location.reload();
-      toast.success("本を新規登録しました");
-      // onModalClose();
     } catch (error) {
       if (error.response.status == 401) {
         // 401"Unauthorized"のHTTPステータスがレスポンスで返ってきた場合→サインアウト

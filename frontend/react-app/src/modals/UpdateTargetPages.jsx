@@ -103,7 +103,7 @@ const UpdateTargetPages = ({
                 className="bg-myPaleGray w-full px-3 py-0.5 rounded-lg shadow-lg text-lg focus:outline-none"
                 />
               <p className="text-xs">
-                ※今日から変更した場合（自動で計算されます）
+                ※今日から開始した場合（自動で計算されます）
               </p>
             </div>
             <div className="flex justify-between mx-auto w-11/12">

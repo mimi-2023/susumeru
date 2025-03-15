@@ -27,7 +27,6 @@ const apiRequest = async({ method, apiEndpoint, data={}, token, isFormUrlEncoded
       data: data,
       headers: headers,
       });
-    // console.log("apiRequest.Response:", response);
     return response;
   } catch (error) {
     console.log('apiRequest failed', error);
