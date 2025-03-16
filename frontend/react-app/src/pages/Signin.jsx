@@ -52,7 +52,7 @@ const Signin = () => {
     }  
   };
 
-  if(currentUser) return <Navigate replace to="/books/list" />;
+  if(currentUser) return <Navigate replace to="/books" />;
 
   return (
     <div className="bg-myPaleBlue text-textBlack font-roundedMplus font-medium min-h-screen">

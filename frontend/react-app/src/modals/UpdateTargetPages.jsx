@@ -40,7 +40,8 @@ const UpdateTargetPages = ({
     });
 
   // モーダルを閉じる
-  const onModalClose = () => {
+  const onModalClose = (event) => {
+    event.stopPropagation();
     reset();
     setIsModalOpen(false);
   };

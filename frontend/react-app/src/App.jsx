@@ -6,12 +6,14 @@ import {
 } from "react-router-dom";
 import { useEffect } from "react";
 import { toast, Slide, ToastContainer } from "react-toastify";
-import { SessionProvider } from './repositories/SessionProvider.jsx'
+import { SessionProvider } from './repositories/SessionProvider.jsx';
+import ProtectedRoute from "./repositories/ProtectedRoute";
+import Base from "./pages/Base";
 import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
 import User from "./pages/User";
 import BooksList from "./pages/BooksList";
-import ProtectedRoute from "./repositories/ProtectedRoute";
+import Book from "./pages/Book";
 // import './App.css'
 
 
@@ -21,8 +23,13 @@ const router = createBrowserRouter(
       <Route path="/signin" element={<Signin />} />
       <Route path="/signup" element={<Signup />} />
       {/* 以下はProtectedRoute で保護 */}
-      <Route path="/user" element={<ProtectedRoute><User /></ProtectedRoute>} />
-      <Route path="/books/list" element={<ProtectedRoute><BooksList /></ProtectedRoute>} />
+      <Route element={<ProtectedRoute />}>
+        <Route element={<Base />}>
+          <Route path="/user" element={<User />} />
+          <Route path="/books" element={<BooksList />} />
+          <Route path="/books/:bookId" element={<Book />} />
+        </Route>               
+      </Route>      
     </>
   )
 )

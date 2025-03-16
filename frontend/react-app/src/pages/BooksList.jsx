@@ -1,12 +1,17 @@
-import Header from "../components/Header";
 import BookItem from "../components/BookItem";
 import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { fetchBooksListRequest } from "../repositories/Requests";
 
 
 const BooksList = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [booksList, setBooksList] = useState([]);
+  const navigate = useNavigate();
+
+  const handleNavigate = (bookId) => {
+    navigate(`/books/${bookId}`);
+  };
 
   useEffect(() => {
     fetchBooksList();  
@@ -28,20 +33,17 @@ const BooksList = () => {
   if (isLoading) return <div>...is Loading</div>
   
   return (
-    <div className="bg-myPaleBlue text-textBlack font-roundedMplus font-medium min-h-screen">
-      <div className="mx-auto pt-5 w-11/12">
-        <Header />
-        <div className="space-y-2 md:ml-[300px]">
-          {booksList.map((book) => {
-            return (
-              <div key={book.book_id} className="space-y-2 md:flex md:gap-2 md:space-y-0">
-                <BookItem book={book} />
-              </div>
-              )
-          })}
-        </div>        
-      </div>
-    </div>
+    <div className="space-y-2 md:ml-[300px]">
+      {booksList.map((book) => {
+        return (
+          <div onClick={() => handleNavigate(book.book_id)} key={book.book_id} className="space-y-2 md:flex md:gap-2 md:space-y-0">
+          {/*  <Link to={`/books/${book.book_id}`} key={book.book_id} className="space-y-2 md:flex md:gap-2 md:space-y-0"> */}
+            <BookItem key={book.book_id} book={book} />
+          {/*  </Link> */}
+          </div>
+          )
+      })}
+    </div> 
   )
 };
 

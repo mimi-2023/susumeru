@@ -1,12 +1,12 @@
 import { useContext } from "react";
 import { SessionContext } from "./SessionProvider";
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 
 
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = () => {
   const { currentUser } = useContext(SessionContext);
 
-  return currentUser ? children : <Navigate replace to="/signin" />
+  return currentUser ? <Outlet /> : <Navigate replace to="/signin" />
 };
 
 export default ProtectedRoute;

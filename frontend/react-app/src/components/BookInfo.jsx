@@ -6,6 +6,11 @@ const BookInfo = ({ bookInfo, updateTargetPages }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const isFinished = bookInfo.currentPage === bookInfo.lastPage;
 
+  const modalOpen = (event) => {
+    event.stopPropagation();
+    setIsModalOpen(true);
+  };
+
   return (
     <>
       {/* モーダル画面 */}
@@ -35,7 +40,7 @@ const BookInfo = ({ bookInfo, updateTargetPages }) => {
             </div>
             <button 
               type="button" 
-              onClick={() => setIsModalOpen(true)}
+              onClick={modalOpen}
               disabled={isFinished}
               className={isFinished ? "opacity-60" : "transition hover:opacity-40"}
               >
